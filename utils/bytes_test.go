@@ -14,6 +14,15 @@ func TestSplitIntoStationNameAndTemperature(t *testing.T) {
 	assert.Equal(t, "10", temperature)
 }
 
+func TestSplitIntoStationNameAndNegativeTemperature(t *testing.T) {
+	line := []byte("Odesa;-10.45")
+	stationName, temperature, err := SplitIntoStationNameAndTemperature(line)
+
+	assert.Nil(t, err)
+	assert.Equal(t, "Odesa", stationName)
+	assert.Equal(t, "-10.45", temperature)
+}
+
 func TestSplitAnInvalidLine(t *testing.T) {
 	line := []byte("Odesa:10")
 	stationName, temperature, err := SplitIntoStationNameAndTemperature(line)
