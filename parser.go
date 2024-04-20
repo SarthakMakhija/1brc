@@ -63,6 +63,8 @@ func (result StationTemperatureStatisticsResult) Iterator() treemap.Iterator {
 	return result.statisticsByStationName.Iterator()
 }
 
+// Parse
+// TODO: rounding
 func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 	scanner := bufio.NewScanner(reader)
 	statisticsByStationName := treemap.NewWithStringComparator()
