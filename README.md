@@ -17,3 +17,7 @@ real	0m0.655s
 user	0m0.786s
 sys	0m0.037s
 ```
+
+### Changes
+
+1. Changed the map value to be a pointer to StationTemperatureStatistics to save the cost of Put operation.
