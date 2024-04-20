@@ -1,12 +1,12 @@
 package brc
 
 import (
+	"1brc/utils"
 	"bufio"
 	"fmt"
 	"github.com/emirpasic/gods/maps/treemap"
 	"io"
 	"strconv"
-	"strings"
 )
 
 type StationTemperatureStatistics struct {
@@ -70,7 +70,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 	statisticsByStationName := treemap.NewWithStringComparator()
 
 	for scanner.Scan() {
-		line := scanner.Text()
+		line := scanner.Bytes()
 		stationName, temperature, err := temperatureByStationName(line)
 		if err != nil {
 			if err == io.EOF {
@@ -106,11 +106,14 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 	return NewStationTemperatureStatisticsResult(statisticsByStationName), nil
 }
 
-func temperatureByStationName(line string) (string, float64, error) {
-	parts := strings.Split(line, ";")
-	temperature, err := strconv.ParseFloat(parts[1], 64)
+func temperatureByStationName(line []byte) (string, float64, error) {
+	stationName, rawTemperature, err := utils.SplitIntoStationNameAndTemperature(line)
 	if err != nil {
 		return "", 0, err
 	}
-	return parts[0], temperature, nil
+	temperature, err := strconv.ParseFloat(rawTemperature, 64)
+	if err != nil {
+		return "", 0, err
+	}
+	return stationName, temperature, nil
 }
