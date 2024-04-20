@@ -10,8 +10,8 @@ func TestSplitIntoStationNameAndTemperature(t *testing.T) {
 	stationName, temperature, err := SplitIntoStationNameAndTemperature(line)
 
 	assert.Nil(t, err)
-	assert.Equal(t, "Odesa", string(stationName))
-	assert.Equal(t, "10", string(temperature))
+	assert.Equal(t, "Odesa", stationName)
+	assert.Equal(t, "10", temperature)
 }
 
 func TestSplitAnInvalidLine(t *testing.T) {
@@ -19,6 +19,6 @@ func TestSplitAnInvalidLine(t *testing.T) {
 	stationName, temperature, err := SplitIntoStationNameAndTemperature(line)
 
 	assert.Error(t, err)
-	assert.Equal(t, []byte(nil), stationName)
-	assert.Equal(t, []byte(nil), temperature)
+	assert.Equal(t, "", stationName)
+	assert.Equal(t, "", temperature)
 }
