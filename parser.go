@@ -36,7 +36,7 @@ func (result StationTemperatureStatisticsResult) MinTemperatureOf(stationName st
 	if !ok {
 		return 0.0
 	}
-	return v.(StationTemperatureStatistics).minTemperature
+	return v.(*StationTemperatureStatistics).minTemperature
 }
 
 func (result StationTemperatureStatisticsResult) MaxTemperatureOf(stationName string) float64 {
@@ -44,7 +44,7 @@ func (result StationTemperatureStatisticsResult) MaxTemperatureOf(stationName st
 	if !ok {
 		return 0.0
 	}
-	return v.(StationTemperatureStatistics).maxTemperature
+	return v.(*StationTemperatureStatistics).maxTemperature
 }
 
 func (result StationTemperatureStatisticsResult) AverageTemperatureOf(stationName string) float64 {
@@ -52,7 +52,7 @@ func (result StationTemperatureStatisticsResult) AverageTemperatureOf(stationNam
 	if !ok {
 		return 0.0
 	}
-	return v.(StationTemperatureStatistics).averageTemperature
+	return v.(*StationTemperatureStatistics).averageTemperature
 }
 
 func (result StationTemperatureStatisticsResult) AllStationsSorted() []interface{} {
@@ -80,7 +80,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 		}
 		stats, ok := statisticsByStationName.Get(stationName)
 		if !ok {
-			statisticsByStationName.Put(stationName, StationTemperatureStatistics{
+			statisticsByStationName.Put(stationName, &StationTemperatureStatistics{
 				minTemperature:       temperature,
 				maxTemperature:       temperature,
 				aggregateTemperature: temperature,
@@ -88,7 +88,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 				averageTemperature:   temperature,
 			})
 		} else {
-			existingStatistics := stats.(StationTemperatureStatistics)
+			existingStatistics := stats.(*StationTemperatureStatistics)
 			minTemperature, maxTemperature := existingStatistics.minTemperature, existingStatistics.maxTemperature
 			if temperature < existingStatistics.minTemperature {
 				minTemperature = temperature
@@ -96,13 +96,11 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 			if temperature > existingStatistics.maxTemperature {
 				maxTemperature = temperature
 			}
-			statisticsByStationName.Put(stationName, StationTemperatureStatistics{
-				minTemperature:       minTemperature,
-				maxTemperature:       maxTemperature,
-				aggregateTemperature: temperature + existingStatistics.aggregateTemperature,
-				totalEntries:         existingStatistics.totalEntries + 1,
-				averageTemperature:   (temperature + existingStatistics.aggregateTemperature) / float64(existingStatistics.totalEntries+1),
-			})
+			existingStatistics.minTemperature = minTemperature
+			existingStatistics.maxTemperature = maxTemperature
+			existingStatistics.aggregateTemperature = temperature + existingStatistics.aggregateTemperature
+			existingStatistics.totalEntries = existingStatistics.totalEntries + 1
+			existingStatistics.averageTemperature = (existingStatistics.aggregateTemperature) / float64(existingStatistics.totalEntries)
 		}
 	}
 	return NewStationTemperatureStatisticsResult(statisticsByStationName), nil

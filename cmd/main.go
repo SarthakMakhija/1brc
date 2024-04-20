@@ -42,7 +42,7 @@ func printableResult(result brc.StationTemperatureStatisticsResult) string {
 
 	statisticsByStationName := result.Iterator()
 	for statisticsByStationName.Next() {
-		statistic := statisticsByStationName.Value().(brc.StationTemperatureStatistics)
+		statistic := statisticsByStationName.Value().(*brc.StationTemperatureStatistics)
 		output.WriteString(statistic.Stringify(statisticsByStationName.Key().(string)))
 		output.WriteString(";")
 	}
