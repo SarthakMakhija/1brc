@@ -15,6 +15,11 @@ var outputDevice io.Writer = os.Stdout
 
 func main() {
 	flag.Parse()
+	if *fileName == "" {
+		_, _ = fmt.Fprintln(os.Stderr, "-f flag is required")
+		return
+	}
+
 	print1brcStatistics(*fileName)
 }
 
