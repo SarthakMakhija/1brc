@@ -19,7 +19,6 @@ func main() {
 		_, _ = fmt.Fprintln(os.Stderr, "-f flag is required")
 		return
 	}
-
 	print1brcStatistics(*fileName)
 }
 
