@@ -2,6 +2,7 @@ package brc
 
 import (
 	"bufio"
+	"fmt"
 	"github.com/emirpasic/gods/maps/treemap"
 	"io"
 	"strconv"
@@ -14,6 +15,10 @@ type StationTemperatureStatistics struct {
 	aggregateTemperature float64
 	totalEntries         uint64
 	averageTemperature   float64
+}
+
+func (statistic StationTemperatureStatistics) Stringify(stationName string) string {
+	return fmt.Sprintf("%s:%v/%v/%v", stationName, statistic.minTemperature, statistic.averageTemperature, statistic.maxTemperature)
 }
 
 type StationTemperatureStatisticsResult struct {
@@ -52,6 +57,10 @@ func (result StationTemperatureStatisticsResult) AverageTemperatureOf(stationNam
 
 func (result StationTemperatureStatisticsResult) AllStationsSorted() []interface{} {
 	return result.statisticsByStationName.Keys()
+}
+
+func (result StationTemperatureStatisticsResult) Iterator() treemap.Iterator {
+	return result.statisticsByStationName.Iterator()
 }
 
 func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
