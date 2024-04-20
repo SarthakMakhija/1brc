@@ -18,16 +18,8 @@ var outputDevice io.Writer = os.Stdout
 
 func main() {
 	flag.Parse()
-	if *fileName == "" {
-		_, _ = fmt.Fprintln(os.Stderr, "-f flag is required")
-		return
-	}
-	if *cpuProfileFileName != "" {
-		cpuProfileFile, err := os.Create(*cpuProfileFileName)
-		if err != nil {
-			log.Fatal(err)
-		}
-		_ = pprof.StartCPUProfile(cpuProfileFile)
+	assertFileName()
+	if mayBeStartCpuProfile() {
 		defer pprof.StopCPUProfile()
 	}
 	print1brcStatistics(*fileName)
@@ -44,14 +36,6 @@ func print1brcStatistics(fileName string) {
 	_, _ = io.WriteString(outputDevice, printableResult(parse(file)))
 }
 
-func parse(file *os.File) brc.StationTemperatureStatisticsResult {
-	temperatureStatisticsResult, err := brc.Parse(bufio.NewReader(file))
-	if err != nil {
-		panic(fmt.Errorf("error parsing the file %v, %v", *fileName, err))
-	}
-	return temperatureStatisticsResult
-}
-
 func printableResult(result brc.StationTemperatureStatisticsResult) string {
 	output := strings.Builder{}
 	output.WriteString("{")
@@ -64,4 +48,30 @@ func printableResult(result brc.StationTemperatureStatisticsResult) string {
 	}
 	output.WriteString("}")
 	return output.String()
+}
+
+func parse(file *os.File) brc.StationTemperatureStatisticsResult {
+	temperatureStatisticsResult, err := brc.Parse(bufio.NewReader(file))
+	if err != nil {
+		panic(fmt.Errorf("error parsing the file %v, %v", *fileName, err))
+	}
+	return temperatureStatisticsResult
+}
+
+func assertFileName() {
+	if *fileName == "" {
+		panic("-f flag is required")
+	}
+}
+
+func mayBeStartCpuProfile() bool {
+	if *cpuProfileFileName != "" {
+		cpuProfileFile, err := os.Create(*cpuProfileFileName)
+		if err != nil {
+			log.Fatal(err)
+		}
+		_ = pprof.StartCPUProfile(cpuProfileFile)
+		return true
+	}
+	return false
 }
