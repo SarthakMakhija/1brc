@@ -6,11 +6,14 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"os"
+	"runtime/pprof"
 	"strings"
 )
 
 var fileName = flag.String("f", "", "file name")
+var cpuProfileFileName = flag.String("cpuprofile", "", "write cpu profile to file")
 var outputDevice io.Writer = os.Stdout
 
 func main() {
@@ -18,6 +21,14 @@ func main() {
 	if *fileName == "" {
 		_, _ = fmt.Fprintln(os.Stderr, "-f flag is required")
 		return
+	}
+	if *cpuProfileFileName != "" {
+		cpuProfileFile, err := os.Create(*cpuProfileFileName)
+		if err != nil {
+			log.Fatal(err)
+		}
+		_ = pprof.StartCPUProfile(cpuProfileFile)
+		defer pprof.StopCPUProfile()
 	}
 	print1brcStatistics(*fileName)
 }
