@@ -77,9 +77,9 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 			}
 			return StationTemperatureStatisticsResult{}, err
 		}
-		stats, ok := statisticsByStationName.Get(stationName)
+		stats, ok := statisticsByStationName.Get(string(stationName))
 		if !ok {
-			statisticsByStationName.Put(stationName, &StationTemperatureStatistics{
+			statisticsByStationName.Put(string(stationName), &StationTemperatureStatistics{
 				minTemperature:       temperature,
 				maxTemperature:       temperature,
 				aggregateTemperature: temperature,
@@ -105,10 +105,10 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 	return NewStationTemperatureStatisticsResult(statisticsByStationName), nil
 }
 
-func temperatureByStationName(line []byte) (string, float64, error) {
+func temperatureByStationName(line []byte) ([]byte, float64, error) {
 	stationName, temperature, err := bytes.SplitIntoStationNameAndTemperature(line)
 	if err != nil {
-		return "", 0, err
+		return nil, 0, err
 	}
 	return stationName, temperature, nil
 }

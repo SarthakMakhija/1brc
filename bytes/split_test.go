@@ -10,7 +10,7 @@ func TestSplitIntoStationNameAndTemperature(t *testing.T) {
 	stationName, temperature, err := SplitIntoStationNameAndTemperature(line)
 
 	assert.Nil(t, err)
-	assert.Equal(t, "Odesa", stationName)
+	assert.Equal(t, "Odesa", string(stationName))
 	assert.Equal(t, 10.1, temperature)
 }
 
@@ -19,7 +19,7 @@ func TestSplitIntoStationNameAndNegativeTemperature(t *testing.T) {
 	stationName, temperature, err := SplitIntoStationNameAndTemperature(line)
 
 	assert.Nil(t, err)
-	assert.Equal(t, "Odesa", stationName)
+	assert.Equal(t, "Odesa", string(stationName))
 	assert.Equal(t, -10.45, temperature)
 }
 
@@ -28,6 +28,6 @@ func TestSplitAnInvalidLineBecauseOfInvalidSeparator(t *testing.T) {
 	stationName, temperature, err := SplitIntoStationNameAndTemperature(line)
 
 	assert.Error(t, err)
-	assert.Equal(t, "", stationName)
+	assert.Equal(t, "", string(stationName))
 	assert.Equal(t, float64(0), temperature)
 }
