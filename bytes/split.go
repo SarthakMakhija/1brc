@@ -16,15 +16,9 @@ func SplitIntoStationNameAndTemperature(line []byte) (string, float64, error) {
 		return station
 	}
 
-	temperature := func(startIndex int) []byte {
-		temperature := make([]byte, len(line)-startIndex)
-		copy(temperature, line[startIndex:])
-		return temperature
-	}
-
 	for index := 0; index < len(line); index++ {
 		if line[index] == separator {
-			temperature, err := toFloat64(temperature(index + 1))
+			temperature, err := toFloat64(line[index+1:])
 			return zeroCopyString(stationName(index)), temperature, err
 		}
 	}
