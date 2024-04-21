@@ -14,11 +14,11 @@ var float64pow10 = [...]float64{
 // toFloat64 simple to float64 conversion.
 // It requires . to be present, will fail if . is missing.
 // It does not consider + or infinity symbol.
-func toFloat64(input string) (float64, error) {
+func toFloat64(input []byte) (float64, error) {
 	return convert(input)
 }
 
-func convert(input string) (float64, error) {
+func convert(input []byte) (float64, error) {
 	var asFloat float64
 	minus := input[0] == '-'
 
@@ -44,7 +44,7 @@ func convert(input string) (float64, error) {
 	return 0, fmt.Errorf("%v, input %s", errFloatParse, input)
 }
 
-func integerPart(input string) (uint64, uint) {
+func integerPart(input []byte) (uint64, uint) {
 	currentIndex := uint(0)
 	minus := input[0] == '-'
 	if minus {

@@ -24,7 +24,7 @@ func SplitIntoStationNameAndTemperature(line []byte) (string, float64, error) {
 
 	for index := 0; index < len(line); index++ {
 		if line[index] == separator {
-			temperature, err := toFloat64(zeroCopyString(temperature(index + 1)))
+			temperature, err := toFloat64(temperature(index + 1))
 			return zeroCopyString(stationName(index)), temperature, err
 		}
 	}
