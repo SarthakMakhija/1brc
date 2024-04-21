@@ -52,3 +52,14 @@ real	0m0.085s
 user	0m0.068s
 sys	0m0.001s
 ```
+
+### Changes: Round4
+
+1. Change convert.go to handle a single fractional digit: c13a5e880381cc7baf3a3ceb0ee3f460b3d090a1
+2. Avoid the cost of uint16 conversion in convert.go: 955b97663012557163a25514adcec971d5fff2df
+
+```shell
+real	0m0.129s
+user	0m0.102s
+sys	0m0.008s
+```
