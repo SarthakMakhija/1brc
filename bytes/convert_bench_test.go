@@ -73,6 +73,22 @@ BenchmarkConvertToFloat64-16    	15333734	      1556 ns/op
 BenchmarkConvertToFloat64-16    	15502268	      1550 ns/op
 BenchmarkConvertToFloat64-16    	15492415	      1552 ns/op
 */
+
+/*
+After removing the cost of uint16 conversion.
+
+go test -run none -bench BenchmarkConvertToFloat64 -benchtime 20s -count 6 -cpuprofile convert_to_float_64_cpu_handle_cost_of_uint16.out
+goos: linux
+goarch: amd64
+pkg: 1brc/bytes
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+BenchmarkConvertToFloat64-16    	23721129	       993.1 ns/op
+BenchmarkConvertToFloat64-16    	23805321	      1004 ns/op
+BenchmarkConvertToFloat64-16    	18496376	      1196 ns/op
+BenchmarkConvertToFloat64-16    	19726849	      1209 ns/op
+BenchmarkConvertToFloat64-16    	19353622	      1176 ns/op
+BenchmarkConvertToFloat64-16    	19573942	      1159 ns/op
+*/
 func BenchmarkConvertToFloat64(b *testing.B) {
 	var localSink float64
 	input := []byte("-10.443")
