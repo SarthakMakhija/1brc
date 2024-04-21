@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/emirpasic/gods/maps/treemap"
 	"io"
+	"strings"
 )
 
 type StationTemperatureStatistics struct {
@@ -66,7 +67,11 @@ func (result StationTemperatureStatisticsResult) Iterator() treemap.Iterator {
 // TODO: rounding
 func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 	scanner := bufio.NewScanner(reader)
-	statisticsByStationName := treemap.NewWithStringComparator()
+	statisticsByStationName := treemap.NewWith(func(inputOne, inputOther interface{}) int {
+		one := inputOne.(string)
+		other := inputOther.(string)
+		return strings.Compare(one, other)
+	})
 
 	for scanner.Scan() {
 		line := scanner.Bytes()
