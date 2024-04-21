@@ -11,11 +11,14 @@ var float64pow10 = [...]float64{
 	1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16,
 }
 
-func ToFloat64(input string) (float64, error) {
-	return asFloat64(input)
+// toFloat64 simple to float64 conversion.
+// It requires . to be present, will fail if . is missing.
+// It does not consider + or infinity symbol.
+func toFloat64(input string) (float64, error) {
+	return convert(input)
 }
 
-func asFloat64(input string) (float64, error) {
+func convert(input string) (float64, error) {
 	var asFloat float64
 	minus := input[0] == '-'
 

@@ -6,48 +6,15 @@ import (
 	"testing"
 )
 
-func TestParseWithIntegerTemperaturesForMinTemperature(t *testing.T) {
-	input := bytes.NewReader([]byte("Odesa;10\nMogadishu;5\nTirana;15\nTirana;9\nMogadishu;6\nCanberra;6\n"))
-	result, err := Parse(input)
-
-	assert.Nil(t, err)
-	assert.Equal(t, 6.0, result.MinTemperatureOf("Canberra"))
-	assert.Equal(t, 5.0, result.MinTemperatureOf("Mogadishu"))
-	assert.Equal(t, 10.0, result.MinTemperatureOf("Odesa"))
-	assert.Equal(t, 9.0, result.MinTemperatureOf("Tirana"))
-}
-
-func TestParseWithIntegerTemperaturesForMaxTemperature(t *testing.T) {
-	input := bytes.NewReader([]byte("Odesa;10\nMogadishu;5\nTirana;15\nTirana;9\nMogadishu;6\nCanberra;6\n"))
-	result, err := Parse(input)
-
-	assert.Nil(t, err)
-	assert.Equal(t, 6.0, result.MaxTemperatureOf("Canberra"))
-	assert.Equal(t, 6.0, result.MaxTemperatureOf("Mogadishu"))
-	assert.Equal(t, 10.0, result.MaxTemperatureOf("Odesa"))
-	assert.Equal(t, 15.0, result.MaxTemperatureOf("Tirana"))
-}
-
-func TestParseWithIntegerTemperaturesForAverageTemperature(t *testing.T) {
-	input := bytes.NewReader([]byte("Odesa;10\nMogadishu;5\nTirana;15\nTirana;9\nMogadishu;6\nCanberra;6\n"))
-	result, err := Parse(input)
-
-	assert.Nil(t, err)
-	assert.Equal(t, 6.0, result.AverageTemperatureOf("Canberra"))
-	assert.Equal(t, 5.5, result.AverageTemperatureOf("Mogadishu"))
-	assert.Equal(t, 10.0, result.AverageTemperatureOf("Odesa"))
-	assert.Equal(t, 12.0, result.AverageTemperatureOf("Tirana"))
-}
-
-func TestParseWithIntegerTemperaturesForSortedStationsNames(t *testing.T) {
-	input := bytes.NewReader([]byte("Odesa;10\nMogadishu;5\nTirana;15\nTirana;9\nMogadishu;6\nCanberra;6\n"))
+func TestParseWithTemperaturesForSortedStationsNames(t *testing.T) {
+	input := bytes.NewReader([]byte("Odesa;10.23\nMogadishu;5.97\nTirana;15.12\nTirana;9.79\nMogadishu;6.89\nCanberra;6.1\n"))
 	result, err := Parse(input)
 
 	assert.Nil(t, err)
 	assert.Equal(t, []interface{}{"Canberra", "Mogadishu", "Odesa", "Tirana"}, result.AllStationsSorted())
 }
 
-func TestParseWithFloatTemperaturesForMinTemperature(t *testing.T) {
+func TestParseWithTemperaturesForMinTemperature(t *testing.T) {
 	input := bytes.NewReader([]byte("Odesa;10.23\nMogadishu;5.97\nTirana;15.12\nTirana;9.79\nMogadishu;6.89\nCanberra;6.1\n"))
 	result, err := Parse(input)
 
@@ -58,7 +25,7 @@ func TestParseWithFloatTemperaturesForMinTemperature(t *testing.T) {
 	assert.Equal(t, 9.79, result.MinTemperatureOf("Tirana"))
 }
 
-func TestParseWithFloatTemperaturesForMaxTemperature(t *testing.T) {
+func TestParseWithTemperaturesForMaxTemperature(t *testing.T) {
 	input := bytes.NewReader([]byte("Odesa;10.23\nMogadishu;5.97\nTirana;15.12\nTirana;9.79\nMogadishu;6.89\nCanberra;6.1\n"))
 	result, err := Parse(input)
 
@@ -69,7 +36,7 @@ func TestParseWithFloatTemperaturesForMaxTemperature(t *testing.T) {
 	assert.Equal(t, 15.12, result.MaxTemperatureOf("Tirana"))
 }
 
-func TestParseWithFloatTemperaturesForAverageTemperature(t *testing.T) {
+func TestParseWithTemperaturesForAverageTemperature(t *testing.T) {
 	input := bytes.NewReader([]byte("Odesa;10.23\nMogadishu;5.97\nTirana;15.12\nTirana;9.79\nMogadishu;6.89\nCanberra;6.1\n"))
 	result, err := Parse(input)
 

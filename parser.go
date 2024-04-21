@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/emirpasic/gods/maps/treemap"
 	"io"
-	"strconv"
 )
 
 type StationTemperatureStatistics struct {
@@ -107,11 +106,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 }
 
 func temperatureByStationName(line []byte) (string, float64, error) {
-	stationName, rawTemperature, err := bytes.SplitIntoStationNameAndTemperature(line)
-	if err != nil {
-		return "", 0, err
-	}
-	temperature, err := strconv.ParseFloat(rawTemperature, 64)
+	stationName, temperature, err := bytes.SplitIntoStationNameAndTemperature(line)
 	if err != nil {
 		return "", 0, err
 	}

@@ -9,7 +9,7 @@ var separator = byte(';')
 
 var ErrInvalidLineFormat = errors.New("invalid line format")
 
-func SplitIntoStationNameAndTemperature(line []byte) (string, string, error) {
+func SplitIntoStationNameAndTemperature(line []byte) (string, float64, error) {
 	stationName := func(endIndex int) []byte {
 		station := make([]byte, endIndex)
 		copy(station, line[:endIndex])
@@ -24,10 +24,11 @@ func SplitIntoStationNameAndTemperature(line []byte) (string, string, error) {
 
 	for index := 0; index < len(line); index++ {
 		if line[index] == separator {
-			return zeroCopyString(stationName(index)), zeroCopyString(temperature(index + 1)), nil
+			temperature, err := toFloat64(zeroCopyString(temperature(index + 1)))
+			return zeroCopyString(stationName(index)), temperature, err
 		}
 	}
-	return "", "", ErrInvalidLineFormat
+	return "", 0, ErrInvalidLineFormat
 }
 
 func zeroCopyString(slice []byte) string {
