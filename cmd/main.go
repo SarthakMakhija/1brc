@@ -40,10 +40,10 @@ func printableResult(result brc.StationTemperatureStatisticsResult) string {
 	output := strings.Builder{}
 	output.WriteString("{")
 
-	statisticsByStationName := result.Iterator()
-	for statisticsByStationName.Next() {
-		statistic := statisticsByStationName.Value().(*brc.StationTemperatureStatistics)
-		output.WriteString(statistic.Stringify(statisticsByStationName.Key().(string)))
+	stationNames := result.AllStationsSorted()
+	for _, stationName := range stationNames {
+		statistic, _ := result.Get(stationName)
+		output.WriteString(statistic.Stringify(stationName))
 		output.WriteString(";")
 	}
 	output.WriteString("}")

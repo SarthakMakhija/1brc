@@ -4,9 +4,9 @@ import (
 	"1brc/bytes"
 	"bufio"
 	"fmt"
-	"github.com/emirpasic/gods/maps/treemap"
+	"github.com/dolthub/swiss"
 	"io"
-	"strings"
+	"sort"
 )
 
 type StationTemperatureStatistics struct {
@@ -22,56 +22,58 @@ func (statistic StationTemperatureStatistics) Stringify(stationName string) stri
 }
 
 type StationTemperatureStatisticsResult struct {
-	statisticsByStationName *treemap.Map
+	statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]
 }
 
-func NewStationTemperatureStatisticsResult(statisticsByStationName *treemap.Map) StationTemperatureStatisticsResult {
+func NewStationTemperatureStatisticsResult(statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]) StationTemperatureStatisticsResult {
 	return StationTemperatureStatisticsResult{
 		statisticsByStationName: statisticsByStationName,
 	}
 }
 
+func (result StationTemperatureStatisticsResult) Get(stationName string) (*StationTemperatureStatistics, bool) {
+	return result.statisticsByStationName.Get(stationName)
+}
+
 func (result StationTemperatureStatisticsResult) MinTemperatureOf(stationName string) float64 {
-	v, ok := result.statisticsByStationName.Get(stationName)
+	statistic, ok := result.statisticsByStationName.Get(stationName)
 	if !ok {
 		return 0.0
 	}
-	return v.(*StationTemperatureStatistics).minTemperature
+	return statistic.minTemperature
 }
 
 func (result StationTemperatureStatisticsResult) MaxTemperatureOf(stationName string) float64 {
-	v, ok := result.statisticsByStationName.Get(stationName)
+	statistic, ok := result.statisticsByStationName.Get(stationName)
 	if !ok {
 		return 0.0
 	}
-	return v.(*StationTemperatureStatistics).maxTemperature
+	return statistic.maxTemperature
 }
 
 func (result StationTemperatureStatisticsResult) AverageTemperatureOf(stationName string) float64 {
-	v, ok := result.statisticsByStationName.Get(stationName)
+	statistic, ok := result.statisticsByStationName.Get(stationName)
 	if !ok {
 		return 0.0
 	}
-	return v.(*StationTemperatureStatistics).averageTemperature
+	return statistic.averageTemperature
 }
 
-func (result StationTemperatureStatisticsResult) AllStationsSorted() []interface{} {
-	return result.statisticsByStationName.Keys()
-}
-
-func (result StationTemperatureStatisticsResult) Iterator() treemap.Iterator {
-	return result.statisticsByStationName.Iterator()
+func (result StationTemperatureStatisticsResult) AllStationsSorted() []string {
+	stationNames := make([]string, 0, result.statisticsByStationName.Count())
+	result.statisticsByStationName.Iter(func(k string, _ *StationTemperatureStatistics) (stop bool) {
+		stationNames = append(stationNames, k)
+		return false
+	})
+	sort.Strings(stationNames)
+	return stationNames
 }
 
 // Parse
 // TODO: rounding
 func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 	scanner := bufio.NewScanner(reader)
-	statisticsByStationName := treemap.NewWith(func(inputOne, inputOther interface{}) int {
-		one := inputOne.(string)
-		other := inputOther.(string)
-		return strings.Compare(one, other)
-	})
+	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
 
 	for scanner.Scan() {
 		line := scanner.Bytes()
@@ -82,7 +84,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 			}
 			return StationTemperatureStatisticsResult{}, err
 		}
-		stats, ok := statisticsByStationName.Get(string(stationName))
+		existingStatistics, ok := statisticsByStationName.Get(string(stationName))
 		if !ok {
 			statisticsByStationName.Put(string(stationName), &StationTemperatureStatistics{
 				minTemperature:       temperature,
@@ -92,7 +94,6 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 				averageTemperature:   temperature,
 			})
 		} else {
-			existingStatistics := stats.(*StationTemperatureStatistics)
 			minTemperature, maxTemperature := existingStatistics.minTemperature, existingStatistics.maxTemperature
 			if temperature < existingStatistics.minTemperature {
 				minTemperature = temperature

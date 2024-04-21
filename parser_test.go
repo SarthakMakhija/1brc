@@ -11,7 +11,7 @@ func TestParseWithTemperaturesForSortedStationsNames(t *testing.T) {
 	result, err := Parse(input)
 
 	assert.Nil(t, err)
-	assert.Equal(t, []interface{}{"Canberra", "Mogadishu", "Odesa", "Tirana"}, result.AllStationsSorted())
+	assert.Equal(t, []string{"Canberra", "Mogadishu", "Odesa", "Tirana"}, result.AllStationsSorted())
 }
 
 func TestParseWithTemperaturesForMinTemperature(t *testing.T) {
