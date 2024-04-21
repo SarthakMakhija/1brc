@@ -20,12 +20,13 @@ func convert(input []byte) (float64, error) {
 	var asFloat float64
 	minus := input[0] == '-'
 
-	wholeValue, currentIndex := integerPart(input)
+	integerValue, currentIndex := integerPart(input)
 	if input[currentIndex] == '.' {
 		currentIndex++
-		wholeValue = wholeValue*10 + uint64(input[currentIndex]-'0')
+		fractionalValue := input[currentIndex] - '0'
+		floatValue := uint16(integerValue)*10 + uint16(fractionalValue)
 
-		asFloat = float64(wholeValue) / fractionPartRepresentation
+		asFloat = float64(floatValue) / fractionPartRepresentation
 		if minus {
 			asFloat = -asFloat
 		}
@@ -34,17 +35,17 @@ func convert(input []byte) (float64, error) {
 	return 0, fmt.Errorf("%v, input %s", errFloatParse, input)
 }
 
-func integerPart(input []byte) (uint64, uint) {
+func integerPart(input []byte) (uint8, uint) {
 	currentIndex := uint(0)
 	minus := input[0] == '-'
 	if minus {
 		currentIndex++
 	}
 
-	wholeValue := uint64(0)
+	integerValue := uint8(0)
 	for input[currentIndex] != '.' {
-		wholeValue = wholeValue*10 + uint64(input[currentIndex]-'0')
+		integerValue = integerValue*10 + (input[currentIndex] - '0')
 		currentIndex++
 	}
-	return wholeValue, currentIndex
+	return integerValue, currentIndex
 }
