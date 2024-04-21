@@ -1,0 +1,12 @@
+goos: linux
+goarch: amd64
+pkg: 1brc/bytes
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+BenchmarkConvertToFloat64-16    	22524248	      2079 ns/op
+BenchmarkConvertToFloat64-16    	11464390	      2052 ns/op
+BenchmarkConvertToFloat64-16    	11422123	      2116 ns/op
+BenchmarkConvertToFloat64-16    	10681839	      2065 ns/op
+BenchmarkConvertToFloat64-16    	11560833	      2122 ns/op
+BenchmarkConvertToFloat64-16    	11359008	      2092 ns/op
+PASS
+ok  	1brc/bytes	176.890s
