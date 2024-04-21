@@ -1,7 +1,7 @@
 package brc
 
 import (
-	"1brc/utils"
+	"1brc/bytes"
 	"bufio"
 	"fmt"
 	"github.com/emirpasic/gods/maps/treemap"
@@ -107,7 +107,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 }
 
 func temperatureByStationName(line []byte) (string, float64, error) {
-	stationName, rawTemperature, err := utils.SplitIntoStationNameAndTemperature(line)
+	stationName, rawTemperature, err := bytes.SplitIntoStationNameAndTemperature(line)
 	if err != nil {
 		return "", 0, err
 	}
