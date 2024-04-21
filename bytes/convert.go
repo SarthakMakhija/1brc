@@ -27,17 +27,14 @@ func convert(input string) (float64, error) {
 		currentIndex++
 		dotIndex := currentIndex
 
-		for currentIndex < uint(len(input)) {
-			if input[currentIndex] >= '0' && input[currentIndex] <= '9' {
-				wholeValue = wholeValue*10 + uint64(input[currentIndex]-'0')
-				currentIndex++
-				continue
-			}
-			break
+		inputLength := uint(len(input))
+		for currentIndex < inputLength {
+			wholeValue = wholeValue*10 + uint64(input[currentIndex]-'0')
+			currentIndex++
 		}
 
 		asFloat = float64(wholeValue) / float64pow10[currentIndex-dotIndex]
-		if currentIndex >= uint(len(input)) {
+		if currentIndex >= inputLength {
 			if minus {
 				asFloat = -asFloat
 			}
@@ -55,13 +52,9 @@ func integerPart(input string) (uint64, uint) {
 	}
 
 	wholeValue := uint64(0)
-	for currentIndex < uint(len(input)) {
-		if input[currentIndex] >= '0' && input[currentIndex] <= '9' {
-			wholeValue = wholeValue*10 + uint64(input[currentIndex]-'0')
-			currentIndex++
-			continue
-		}
-		break
+	for input[currentIndex] != '.' {
+		wholeValue = wholeValue*10 + uint64(input[currentIndex]-'0')
+		currentIndex++
 	}
 	return wholeValue, currentIndex
 }
