@@ -35,9 +35,7 @@ sys	0m0.013s
 ### Changes: Round2
 
 1. Custom toFloat64: 8fe65963c49d0a4000be185fe44b7cb2a2f081af, 4b1fcdb5805ee88a2a7b3c68ce1a3c168868b728, 85a4e07a0169041200ccffd9a59362e9c25947a4
-2. 
-
-
+2. Avoid temperature copy: 6d55773195e8a61f730b3294658e3edf83949591
 
 ```shell
 real	0m0.242s
