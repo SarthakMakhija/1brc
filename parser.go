@@ -3,10 +3,11 @@ package brc
 import (
 	"1brc/bytes"
 	"bufio"
-	"fmt"
+	bytes2 "bytes"
 	"github.com/dolthub/swiss"
 	"io"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -19,7 +20,18 @@ type StationTemperatureStatistics struct {
 }
 
 func (statistic StationTemperatureStatistics) stringify(stationName string) string {
-	return fmt.Sprintf("%s:%v/%v/%v", stationName, statistic.minTemperature, statistic.averageTemperature, statistic.maxTemperature)
+	buffer := &bytes2.Buffer{}
+	buffer.Grow(len(stationName) + 3 + 12)
+
+	buffer.WriteString(stationName)
+	buffer.WriteByte(':')
+	buffer.WriteString(strconv.FormatFloat(statistic.minTemperature, 'f', -1, 64))
+	buffer.WriteByte('/')
+	buffer.WriteString(strconv.FormatFloat(statistic.averageTemperature, 'f', -1, 64))
+	buffer.WriteByte('/')
+	buffer.WriteString(strconv.FormatFloat(statistic.maxTemperature, 'f', -1, 64))
+
+	return buffer.String()
 }
 
 type StationTemperatureStatisticsResult struct {
