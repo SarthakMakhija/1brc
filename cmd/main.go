@@ -9,7 +9,6 @@ import (
 	"log"
 	"os"
 	"runtime/pprof"
-	"strings"
 )
 
 var fileName = flag.String("f", "", "file name")
@@ -37,17 +36,7 @@ func print1brcStatistics(fileName string) {
 }
 
 func printableResult(result brc.StationTemperatureStatisticsResult) string {
-	output := strings.Builder{}
-	output.WriteString("{")
-
-	stationNames := result.AllStationsSorted()
-	for _, stationName := range stationNames {
-		statistic, _ := result.Get(stationName)
-		output.WriteString(statistic.Stringify(stationName))
-		output.WriteString(";")
-	}
-	output.WriteString("}")
-	return output.String()
+	return result.PrintableResult()
 }
 
 func parse(file *os.File) brc.StationTemperatureStatisticsResult {

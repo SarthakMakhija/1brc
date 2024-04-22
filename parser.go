@@ -7,6 +7,7 @@ import (
 	"github.com/dolthub/swiss"
 	"io"
 	"sort"
+	"strings"
 )
 
 type StationTemperatureStatistics struct {
@@ -17,7 +18,7 @@ type StationTemperatureStatistics struct {
 	averageTemperature   float64
 }
 
-func (statistic StationTemperatureStatistics) Stringify(stationName string) string {
+func (statistic StationTemperatureStatistics) stringify(stationName string) string {
 	return fmt.Sprintf("%s:%v/%v/%v", stationName, statistic.minTemperature, statistic.averageTemperature, statistic.maxTemperature)
 }
 
@@ -31,11 +32,11 @@ func NewStationTemperatureStatisticsResult(statisticsByStationName *swiss.Map[st
 	}
 }
 
-func (result StationTemperatureStatisticsResult) Get(stationName string) (*StationTemperatureStatistics, bool) {
+func (result StationTemperatureStatisticsResult) get(stationName string) (*StationTemperatureStatistics, bool) {
 	return result.statisticsByStationName.Get(stationName)
 }
 
-func (result StationTemperatureStatisticsResult) MinTemperatureOf(stationName string) float64 {
+func (result StationTemperatureStatisticsResult) minTemperatureOf(stationName string) float64 {
 	statistic, ok := result.statisticsByStationName.Get(stationName)
 	if !ok {
 		return 0.0
@@ -43,7 +44,7 @@ func (result StationTemperatureStatisticsResult) MinTemperatureOf(stationName st
 	return statistic.minTemperature
 }
 
-func (result StationTemperatureStatisticsResult) MaxTemperatureOf(stationName string) float64 {
+func (result StationTemperatureStatisticsResult) maxTemperatureOf(stationName string) float64 {
 	statistic, ok := result.statisticsByStationName.Get(stationName)
 	if !ok {
 		return 0.0
@@ -51,7 +52,7 @@ func (result StationTemperatureStatisticsResult) MaxTemperatureOf(stationName st
 	return statistic.maxTemperature
 }
 
-func (result StationTemperatureStatisticsResult) AverageTemperatureOf(stationName string) float64 {
+func (result StationTemperatureStatisticsResult) averageTemperatureOf(stationName string) float64 {
 	statistic, ok := result.statisticsByStationName.Get(stationName)
 	if !ok {
 		return 0.0
@@ -59,7 +60,7 @@ func (result StationTemperatureStatisticsResult) AverageTemperatureOf(stationNam
 	return statistic.averageTemperature
 }
 
-func (result StationTemperatureStatisticsResult) AllStationsSorted() []string {
+func (result StationTemperatureStatisticsResult) allStationsSorted() []string {
 	stationNames := make([]string, 0, result.statisticsByStationName.Count())
 	result.statisticsByStationName.Iter(func(k string, _ *StationTemperatureStatistics) (stop bool) {
 		stationNames = append(stationNames, k)
@@ -67,6 +68,20 @@ func (result StationTemperatureStatisticsResult) AllStationsSorted() []string {
 	})
 	sort.Strings(stationNames)
 	return stationNames
+}
+
+func (result StationTemperatureStatisticsResult) PrintableResult() string {
+	output := strings.Builder{}
+	output.WriteString("{")
+
+	stationNames := result.allStationsSorted()
+	for _, stationName := range stationNames {
+		statistic, _ := result.get(stationName)
+		output.WriteString(statistic.stringify(stationName))
+		output.WriteString(";")
+	}
+	output.WriteString("}")
+	return output.String()
 }
 
 // Parse

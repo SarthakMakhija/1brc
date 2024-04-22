@@ -11,7 +11,7 @@ func TestParseWithTemperaturesForSortedStationsNames(t *testing.T) {
 	result, err := Parse(input)
 
 	assert.Nil(t, err)
-	assert.Equal(t, []string{"Canberra", "Mogadishu", "Odesa", "Tirana"}, result.AllStationsSorted())
+	assert.Equal(t, []string{"Canberra", "Mogadishu", "Odesa", "Tirana"}, result.allStationsSorted())
 }
 
 func TestParseWithTemperaturesForMinTemperature(t *testing.T) {
@@ -19,10 +19,10 @@ func TestParseWithTemperaturesForMinTemperature(t *testing.T) {
 	result, err := Parse(input)
 
 	assert.Nil(t, err)
-	assert.Equal(t, 6.1, result.MinTemperatureOf("Canberra"))
-	assert.Equal(t, 5.9, result.MinTemperatureOf("Mogadishu"))
-	assert.Equal(t, 10.2, result.MinTemperatureOf("Odesa"))
-	assert.Equal(t, 9.7, result.MinTemperatureOf("Tirana"))
+	assert.Equal(t, 6.1, result.minTemperatureOf("Canberra"))
+	assert.Equal(t, 5.9, result.minTemperatureOf("Mogadishu"))
+	assert.Equal(t, 10.2, result.minTemperatureOf("Odesa"))
+	assert.Equal(t, 9.7, result.minTemperatureOf("Tirana"))
 }
 
 func TestParseWithTemperaturesForMaxTemperature(t *testing.T) {
@@ -30,10 +30,10 @@ func TestParseWithTemperaturesForMaxTemperature(t *testing.T) {
 	result, err := Parse(input)
 
 	assert.Nil(t, err)
-	assert.Equal(t, 6.1, result.MaxTemperatureOf("Canberra"))
-	assert.Equal(t, 6.8, result.MaxTemperatureOf("Mogadishu"))
-	assert.Equal(t, 10.2, result.MaxTemperatureOf("Odesa"))
-	assert.Equal(t, 15.1, result.MaxTemperatureOf("Tirana"))
+	assert.Equal(t, 6.1, result.maxTemperatureOf("Canberra"))
+	assert.Equal(t, 6.8, result.maxTemperatureOf("Mogadishu"))
+	assert.Equal(t, 10.2, result.maxTemperatureOf("Odesa"))
+	assert.Equal(t, 15.1, result.maxTemperatureOf("Tirana"))
 }
 
 func TestParseWithTemperaturesForAverageTemperature(t *testing.T) {
@@ -41,8 +41,21 @@ func TestParseWithTemperaturesForAverageTemperature(t *testing.T) {
 	result, err := Parse(input)
 
 	assert.Nil(t, err)
-	assert.Equal(t, 6.1, result.AverageTemperatureOf("Canberra"))
-	assert.Equal(t, 6.35, result.AverageTemperatureOf("Mogadishu"))
-	assert.Equal(t, 10.2, result.AverageTemperatureOf("Odesa"))
-	assert.InDelta(t, 12.4, result.AverageTemperatureOf("Tirana"), 0.01)
+	assert.Equal(t, 6.1, result.averageTemperatureOf("Canberra"))
+	assert.Equal(t, 6.35, result.averageTemperatureOf("Mogadishu"))
+	assert.Equal(t, 10.2, result.averageTemperatureOf("Odesa"))
+	assert.InDelta(t, 12.4, result.averageTemperatureOf("Tirana"), 0.01)
+}
+
+func TestPrintableResult(t *testing.T) {
+	input := bytes.NewReader([]byte("Odesa;10.2\nMogadishu;5.9\nTirana;15.1\nTirana;9.3\nMogadishu;6.8\nCanberra;6.1\n"))
+	result, err := Parse(input)
+
+	assert.Nil(t, err)
+	printableResult := result.PrintableResult()
+
+	assert.Equal(t,
+		"{Canberra:6.1/6.1/6.1;Mogadishu:5.9/6.35/6.8;Odesa:10.2/10.2/10.2;Tirana:9.3/12.2/15.1;}",
+		printableResult,
+	)
 }
