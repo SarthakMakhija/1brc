@@ -2,6 +2,8 @@ package brc
 
 import (
 	bytes2 "bytes"
+	"fmt"
+	"github.com/dolthub/swiss"
 	"testing"
 )
 
@@ -98,5 +100,41 @@ func BenchmarkStringify(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_ = statistic.stringify(stationName, buffer)
+	}
+}
+
+/*
+Baseline with strings.Builder in PrintableResult.
+
+go test -run none -bench PrintableResult -benchtime 10s -count 6
+
+goos: linux
+goarch: amd64
+pkg: 1brc
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkPrintableResult-16    	      16	 675211252 ns/op
+BenchmarkPrintableResult-16    	      15	 678172004 ns/op
+BenchmarkPrintableResult-16    	      15	 673083116 ns/op
+BenchmarkPrintableResult-16    	      15	 686275484 ns/op
+BenchmarkPrintableResult-16    	      18	 666093393 ns/op
+BenchmarkPrintableResult-16    	      15	 667323014 ns/op
+
+This is almost 670ns for PrintableResult with a single station.
+*/
+func BenchmarkPrintableResult1M(b *testing.B) {
+	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](1000_000)
+	for entry := 1; entry <= 1000_000; entry++ {
+		statisticsByStationName.Put(fmt.Sprintf("New Mexico %v", entry), &StationTemperatureStatistics{
+			minTemperature:     -10.3,
+			maxTemperature:     10.8,
+			averageTemperature: 5.6,
+		})
+	}
+	statisticsResult := NewStationTemperatureStatisticsResult(statisticsByStationName)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_ = statisticsResult.PrintableResult()
 	}
 }
