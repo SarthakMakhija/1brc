@@ -121,6 +121,24 @@ BenchmarkPrintableResult10K-16    	    2083	   5444952 ns/op
 
 This approximately 5.715835ms for printing result with 10K unique stations.
 */
+
+/*
+After replacing strings.Builder in PrintableResult bytes.Buffer.
+
+go test -run none -bench PrintableResult -benchtime 10s -count 6
+
+goos: linux
+goarch: amd64
+pkg: 1brc
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkPrintableResult10K-16    	    2223	   5354482 ns/op
+BenchmarkPrintableResult10K-16    	    2341	   5232776 ns/op
+BenchmarkPrintableResult10K-16    	    2475	   5184471 ns/op
+BenchmarkPrintableResult10K-16    	    2295	   5191897 ns/op
+BenchmarkPrintableResult10K-16    	    2410	   5056555 ns/op
+BenchmarkPrintableResult10K-16    	    2179	   5123318 ns/op
+*/
 func BenchmarkPrintableResult10K(b *testing.B) {
 	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
 	for entry := 1; entry <= 10_000; entry++ {

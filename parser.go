@@ -8,7 +8,6 @@ import (
 	"io"
 	"sort"
 	"strconv"
-	"strings"
 )
 
 type StationTemperatureStatistics struct {
@@ -94,16 +93,16 @@ func (result StationTemperatureStatisticsResult) allStationsSorted() []string {
 }
 
 func (result StationTemperatureStatisticsResult) PrintableResult() string {
-	output := strings.Builder{}
-	output.WriteString("{")
+	output := &bytes2.Buffer{}
+	output.WriteByte('{')
 
 	stationNames := result.allStationsSorted()
 	for _, stationName := range stationNames {
 		statistic, _ := result.get(stationName)
 		output.WriteString(statistic.stringify(stationName, result.printableBuffer))
-		output.WriteString(";")
+		output.WriteByte(';')
 	}
-	output.WriteString("}")
+	output.WriteByte('}')
 	return output.String()
 }
 
