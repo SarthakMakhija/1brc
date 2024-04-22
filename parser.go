@@ -93,10 +93,13 @@ func (result StationTemperatureStatisticsResult) allStationsSorted() []string {
 }
 
 func (result StationTemperatureStatisticsResult) PrintableResult() string {
+	stationNames := result.allStationsSorted()
+	stationCount := len(stationNames)
+
 	output := &bytes2.Buffer{}
+	output.Grow(printableBufferSizePerStatistic*stationCount + 2 + stationCount)
 	output.WriteByte('{')
 
-	stationNames := result.allStationsSorted()
 	for _, stationName := range stationNames {
 		statistic, _ := result.get(stationName)
 		output.WriteString(statistic.stringify(stationName, result.printableBuffer))

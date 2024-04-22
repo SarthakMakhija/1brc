@@ -139,6 +139,23 @@ BenchmarkPrintableResult10K-16    	    2295	   5191897 ns/op
 BenchmarkPrintableResult10K-16    	    2410	   5056555 ns/op
 BenchmarkPrintableResult10K-16    	    2179	   5123318 ns/op
 */
+
+/*
+After presizing bytes.Buffer.
+
+go test -run none -bench PrintableResult -benchtime 10s -count 6
+goos: linux
+goarch: amd64
+pkg: 1brc
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkPrintableResult10K-16    	    1953	   5226138 ns/op
+BenchmarkPrintableResult10K-16    	    2348	   5168236 ns/op
+BenchmarkPrintableResult10K-16    	    2120	   5093404 ns/op
+BenchmarkPrintableResult10K-16    	    2384	   5228728 ns/op
+BenchmarkPrintableResult10K-16    	    2283	   5280616 ns/op
+BenchmarkPrintableResult10K-16    	    2331	   5191176 ns/op
+*/
 func BenchmarkPrintableResult10K(b *testing.B) {
 	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
 	for entry := 1; entry <= 10_000; entry++ {
