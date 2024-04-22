@@ -9,8 +9,6 @@ import (
 
 /*
 **
-Baseline with fmt.Sprintf(...).
-
 go test -run none -bench . -benchtime 10s -count 7 | tee bench_44k.txt
 
 goos: linux
@@ -37,27 +35,6 @@ cpu: 13th Gen Intel(R) Core(TM) i7-1360P
 	│    sec/op     │
 
 ParseWeatherStations44K-16     1.692µ ± 3%
-*/
-
-/*
-*
-After using:
-
-buffer := &bytes2.Buffer{}
-buffer.Grow(len(stationName) + 3 + 12)
-
-go test -run none -bench Stringify -benchtime 10s -count 6
-goos: linux
-goarch: amd64
-pkg: 1brc
-cpu: 13th Gen Intel(R) Core(TM) i7-1360P
-
-BenchmarkStringify-16    	36611558	       287.6 ns/op
-BenchmarkStringify-16    	41225746	       290.2 ns/op
-BenchmarkStringify-16    	44013812	       288.9 ns/op
-BenchmarkStringify-16    	47142757	       281.4 ns/op
-BenchmarkStringify-16    	39721114	       286.5 ns/op
-BenchmarkStringify-16    	43570278	       294.2 ns/op
 */
 func BenchmarkParseWeatherStations44K(b *testing.B) {
 	file, err := os.Open("../fixture/44K_weather_stations.csv")

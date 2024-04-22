@@ -19,9 +19,8 @@ type StationTemperatureStatistics struct {
 	averageTemperature   float64
 }
 
-func (statistic StationTemperatureStatistics) stringify(stationName string) string {
-	buffer := &bytes2.Buffer{}
-	buffer.Grow(len(stationName) + 3 + 12)
+func (statistic StationTemperatureStatistics) stringify(stationName string, buffer *bytes2.Buffer) string {
+	buffer.Reset()
 
 	buffer.WriteString(stationName)
 	buffer.WriteByte(':')
@@ -34,13 +33,25 @@ func (statistic StationTemperatureStatistics) stringify(stationName string) stri
 	return buffer.String()
 }
 
+const (
+	maxSizeOfStationName = 100
+	numberOfSeparators   = 3
+	maxSizeOfTemperature = 4
+	printableBufferSize  = maxSizeOfStationName + numberOfSeparators + maxSizeOfTemperature*3
+)
+
 type StationTemperatureStatisticsResult struct {
 	statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]
+	printableBuffer         *bytes2.Buffer
 }
 
 func NewStationTemperatureStatisticsResult(statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]) StationTemperatureStatisticsResult {
+	printableBuffer := &bytes2.Buffer{}
+	printableBuffer.Grow(printableBufferSize)
+
 	return StationTemperatureStatisticsResult{
 		statisticsByStationName: statisticsByStationName,
+		printableBuffer:         printableBuffer,
 	}
 }
 
@@ -89,7 +100,7 @@ func (result StationTemperatureStatisticsResult) PrintableResult() string {
 	stationNames := result.allStationsSorted()
 	for _, stationName := range stationNames {
 		statistic, _ := result.get(stationName)
-		output.WriteString(statistic.stringify(stationName))
+		output.WriteString(statistic.stringify(stationName, result.printableBuffer))
 		output.WriteString(";")
 	}
 	output.WriteString("}")
