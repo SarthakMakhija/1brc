@@ -83,9 +83,11 @@ func (result StationTemperatureStatisticsResult) averageTemperatureOf(stationNam
 }
 
 func (result StationTemperatureStatisticsResult) allStationsSorted() []string {
-	stationNames := make([]string, 0, result.statisticsByStationName.Count())
-	result.statisticsByStationName.Iter(func(k string, _ *StationTemperatureStatistics) (stop bool) {
-		stationNames = append(stationNames, k)
+	stationNames := make([]string, result.statisticsByStationName.Count())
+	index := 0
+	result.statisticsByStationName.Iter(func(stationName string, _ *StationTemperatureStatistics) (stop bool) {
+		stationNames[index] = stationName
+		index++
 		return false
 	})
 	sort.Strings(stationNames)
