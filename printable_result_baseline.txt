@@ -1,0 +1,12 @@
+goos: linux
+goarch: amd64
+pkg: 1brc
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+BenchmarkPrintableResult10K-16    	    1948	   5715835 ns/op
+BenchmarkPrintableResult10K-16    	    2320	   5508062 ns/op
+BenchmarkPrintableResult10K-16    	    2128	   5482432 ns/op
+BenchmarkPrintableResult10K-16    	    2104	   5642956 ns/op
+BenchmarkPrintableResult10K-16    	    2288	   5472235 ns/op
+BenchmarkPrintableResult10K-16    	    2083	   5444952 ns/op
+PASS
+ok  	1brc	74.767s

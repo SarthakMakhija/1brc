@@ -95,7 +95,7 @@ func BenchmarkStringify(b *testing.B) {
 	stationName := "New Mexico"
 
 	buffer := &bytes2.Buffer{}
-	buffer.Grow(printableBufferSize)
+	buffer.Grow(printableBufferSizePerStatistic)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -104,27 +104,26 @@ func BenchmarkStringify(b *testing.B) {
 }
 
 /*
-Baseline with strings.Builder in PrintableResult.
+Baseline with strings.Builder in PrintableResult with 10K unique stations.
 
-go test -run none -bench PrintableResult -benchtime 10s -count 6
-
+go test -run none -bench PrintableResult -benchtime 10s -count 6 | tee printable_result_baseline.txt
 goos: linux
 goarch: amd64
 pkg: 1brc
 cpu: 13th Gen Intel(R) Core(TM) i7-1360P
 
-BenchmarkPrintableResult-16    	      16	 675211252 ns/op
-BenchmarkPrintableResult-16    	      15	 678172004 ns/op
-BenchmarkPrintableResult-16    	      15	 673083116 ns/op
-BenchmarkPrintableResult-16    	      15	 686275484 ns/op
-BenchmarkPrintableResult-16    	      18	 666093393 ns/op
-BenchmarkPrintableResult-16    	      15	 667323014 ns/op
+BenchmarkPrintableResult10K-16    	    1948	   5715835 ns/op
+BenchmarkPrintableResult10K-16    	    2320	   5508062 ns/op
+BenchmarkPrintableResult10K-16    	    2128	   5482432 ns/op
+BenchmarkPrintableResult10K-16    	    2104	   5642956 ns/op
+BenchmarkPrintableResult10K-16    	    2288	   5472235 ns/op
+BenchmarkPrintableResult10K-16    	    2083	   5444952 ns/op
 
-This is almost 670ns for PrintableResult with a single station.
+This approximately 5.715835ms for printing result with 10K unique stations.
 */
-func BenchmarkPrintableResult1M(b *testing.B) {
-	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](1000_000)
-	for entry := 1; entry <= 1000_000; entry++ {
+func BenchmarkPrintableResult10K(b *testing.B) {
+	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
+	for entry := 1; entry <= 10_000; entry++ {
 		statisticsByStationName.Put(fmt.Sprintf("New Mexico %v", entry), &StationTemperatureStatistics{
 			minTemperature:     -10.3,
 			maxTemperature:     10.8,

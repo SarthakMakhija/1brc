@@ -34,10 +34,10 @@ func (statistic StationTemperatureStatistics) stringify(stationName string, buff
 }
 
 const (
-	maxSizeOfStationName = 100
-	numberOfSeparators   = 3
-	maxSizeOfTemperature = 4
-	printableBufferSize  = maxSizeOfStationName + numberOfSeparators + maxSizeOfTemperature*3
+	maxSizeOfStationName            = 100
+	numberOfSeparators              = 3
+	maxSizeOfTemperature            = 4
+	printableBufferSizePerStatistic = maxSizeOfStationName + numberOfSeparators + maxSizeOfTemperature*3
 )
 
 type StationTemperatureStatisticsResult struct {
@@ -47,7 +47,7 @@ type StationTemperatureStatisticsResult struct {
 
 func NewStationTemperatureStatisticsResult(statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]) StationTemperatureStatisticsResult {
 	printableBuffer := &bytes2.Buffer{}
-	printableBuffer.Grow(printableBufferSize)
+	printableBuffer.Grow(printableBufferSizePerStatistic)
 
 	return StationTemperatureStatisticsResult{
 		statisticsByStationName: statisticsByStationName,
