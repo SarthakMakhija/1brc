@@ -63,3 +63,14 @@ real	0m0.129s
 user	0m0.102s
 sys	0m0.008s
 ```
+
+### Changes: Round 5
+
+1. Optimizes stringify: 84617a2dcb2cc6be189e0176d6e8dd804bca51af
+2. Optimizes PrintableResult: 95b67977fde89049efd97d0a40218e9e3ce87d2c
+
+```shell
+real	0m0.064s
+user	0m0.064s
+sys	0m0.000s
+```
