@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-var errFloatParse = errors.New("cannot parse float64")
+var errParseTemperature = errors.New("cannot parse temperature")
 
 const (
 	fractionPartRepresentation = float64(10)
@@ -26,22 +26,22 @@ func Format(temperature float64, slice []byte) string {
 }
 
 func convert(input []byte) (float64, error) {
-	var asFloat float64
+	var asTemperature float64
 
 	minus := input[0] == minusSign
 	integerValue, currentIndex := integerPart(input, minus)
 	if input[currentIndex] == '.' {
 		currentIndex++
 		fractionalValue := input[currentIndex] - '0'
-		floatValue := uint16(integerValue)*10 + uint16(fractionalValue)
+		eligibleFloat := uint16(integerValue)*10 + uint16(fractionalValue)
 
-		asFloat = float64(floatValue) / fractionPartRepresentation
+		asTemperature = float64(eligibleFloat) / fractionPartRepresentation
 		if minus {
-			asFloat = -asFloat
+			asTemperature = -asTemperature
 		}
-		return asFloat, nil
+		return asTemperature, nil
 	}
-	return 0, fmt.Errorf("%v, input %s", errFloatParse, input)
+	return 0, fmt.Errorf("%v, input %s", errParseTemperature, input)
 }
 
 func integerPart(input []byte, minus bool) (uint8, uint) {
