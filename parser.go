@@ -17,16 +17,21 @@ type StationTemperatureStatistics struct {
 	averageTemperature   float64
 }
 
-func (statistic StationTemperatureStatistics) stringify(stationName string, resultBuffer *bytes2.Buffer) string {
+func (statistic StationTemperatureStatistics) stringify(
+	stationName string,
+	temperatureBuffer *bytes2.Buffer,
+	resultBuffer *bytes2.Buffer,
+) string {
+	temperatureBuffer.Reset()
 	resultBuffer.Reset()
 
 	resultBuffer.WriteString(stationName)
 	resultBuffer.WriteByte(':')
-	resultBuffer.WriteString(bytes.Format(statistic.minTemperature))
+	resultBuffer.WriteString(bytes.Format(statistic.minTemperature, temperatureBuffer.Bytes()))
 	resultBuffer.WriteByte('/')
-	resultBuffer.WriteString(bytes.Format(statistic.averageTemperature))
+	resultBuffer.WriteString(bytes.Format(statistic.averageTemperature, temperatureBuffer.Bytes()))
 	resultBuffer.WriteByte('/')
-	resultBuffer.WriteString(bytes.Format(statistic.maxTemperature))
+	resultBuffer.WriteString(bytes.Format(statistic.maxTemperature, temperatureBuffer.Bytes()))
 
 	return resultBuffer.String()
 }
@@ -40,7 +45,7 @@ const (
 
 type StationTemperatureStatisticsResult struct {
 	statisticsByStationName    *swiss.Map[string, *StationTemperatureStatistics]
-	printableTemperatureBuffer []byte
+	printableTemperatureBuffer *bytes2.Buffer
 	printableBuffer            *bytes2.Buffer
 }
 
@@ -48,9 +53,11 @@ func NewStationTemperatureStatisticsResult(statisticsByStationName *swiss.Map[st
 	printableBuffer := &bytes2.Buffer{}
 	printableBuffer.Grow(printableBufferSizePerStatistic)
 
+	printableTemperatureBuffer := &bytes2.Buffer{}
+	printableTemperatureBuffer.Grow(64)
 	return StationTemperatureStatisticsResult{
 		statisticsByStationName:    statisticsByStationName,
-		printableTemperatureBuffer: make([]byte, 0, 64),
+		printableTemperatureBuffer: printableTemperatureBuffer,
 		printableBuffer:            printableBuffer,
 	}
 }
@@ -105,7 +112,7 @@ func (result StationTemperatureStatisticsResult) PrintableResult() string {
 
 	for _, stationName := range stationNames {
 		statistic, _ := result.get(stationName)
-		output.WriteString(statistic.stringify(stationName, result.printableBuffer))
+		output.WriteString(statistic.stringify(stationName, result.printableTemperatureBuffer, result.printableBuffer))
 		output.WriteByte(';')
 	}
 	output.WriteByte('}')

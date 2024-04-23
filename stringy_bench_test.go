@@ -103,6 +103,23 @@ BenchmarkStringify-16    	55961834	       205.3 ns/op
 BenchmarkStringify-16    	55442431	       205.4 ns/op
 BenchmarkStringify-16    	58051821	       208.4 ns/op
 */
+
+/*
+After using a common buffer.
+
+go test -run none -bench Stringify -benchtime 10s -count 6
+goos: linux
+goarch: amd64
+pkg: 1brc
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkStringify-16    	61418422	       181.9 ns/op
+BenchmarkStringify-16    	64515712	       182.7 ns/op
+BenchmarkStringify-16    	63582696	       182.1 ns/op
+BenchmarkStringify-16    	58117922	       182.7 ns/op
+BenchmarkStringify-16    	59741026	       181.5 ns/op
+BenchmarkStringify-16    	66237178	       181.6 ns/op
+*/
 func BenchmarkStringify(b *testing.B) {
 	statistic := StationTemperatureStatistics{
 		minTemperature:     -10.3,
@@ -111,12 +128,14 @@ func BenchmarkStringify(b *testing.B) {
 	}
 	stationName := "New Mexico"
 
-	buffer := &bytes2.Buffer{}
-	buffer.Grow(printableBufferSizePerStatistic)
+	resultBuffer := &bytes2.Buffer{}
+	resultBuffer.Grow(printableBufferSizePerStatistic)
+	temperatureBuffer := &bytes2.Buffer{}
+	temperatureBuffer.Grow(64)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = statistic.stringify(stationName, buffer)
+		_ = statistic.stringify(stationName, temperatureBuffer, resultBuffer)
 	}
 }
 

@@ -38,8 +38,9 @@ func TestFormat(t *testing.T) {
 		{input: -40.1, expected: "-40.1"},
 	}
 
+	slice := make([]byte, 0, 64)
 	for _, row := range inputTable {
-		result := Format(row.input)
+		result := Format(row.input, slice)
 		assert.Equal(t, row.expected, result)
 	}
 }
