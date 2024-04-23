@@ -95,3 +95,25 @@ real	0m0.089s
 user	0m0.052s
 sys	0m0.015s
 ```
+
+```shell
+time ./main -f ../fixture/10M_weather_stations.csv
+
+real	0m0.532s
+user	0m0.487s
+sys	0m0.032s
+```
+
+Quick analysis:
+Consider that we want to parse the file with one billion rows **(1000 million) in 5 seconds**.
+
+This means the target is:
+- **1000 million rows** in **5 seconds**
+- **1000 million rows** in **5000000000 nanoseconds**
+- **10^9 rows** in **5000000000 nanoseconds**
+- **Each row** should be processed in **0.2 nanoseconds**
+
+Based on the above numbers:
+- **10 million rows** are being processed in **0.532 seconds**
+- **10^7 rows** in **532000000 nanoseconds**
+- **Each row** is being processed in **0.01879699248 nanoseconds**
