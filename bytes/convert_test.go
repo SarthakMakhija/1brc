@@ -19,7 +19,7 @@ func TestToFloat64(t *testing.T) {
 	}
 
 	for _, row := range inputTable {
-		result, err := toFloat64(row.input)
+		result, err := ToTemperature(row.input)
 		assert.Nil(t, err)
 		assert.Equal(t, row.expected, result)
 	}

@@ -13,10 +13,10 @@ const (
 	minusSign                  = byte('-')
 )
 
-// toFloat64 simple to float64 conversion.
+// ToTemperature converts the input to a float64 representation.
 // It requires . to be present, will fail if . is missing.
 // It does not consider + or infinity symbol.
-func toFloat64(input []byte) (float64, error) {
+func ToTemperature(input []byte) (float64, error) {
 	return convert(input)
 }
 
