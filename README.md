@@ -111,9 +111,9 @@ This means the target is:
 - **1000 million rows** in **5 seconds**
 - **1000 million rows** in **5000000000 nanoseconds**
 - **10^9 rows** in **5000000000 nanoseconds**
-- **Each row** should be processed in **0.2 nanoseconds**
+- **Each row** should be processed in **5 nanoseconds**
 
 Based on the above numbers:
 - **10 million rows** are being processed in **0.532 seconds**
 - **10^7 rows** in **532000000 nanoseconds**
-- **Each row** is being processed in **0.01879699248 nanoseconds**
+- **Each row** is being processed in **53.2 nanoseconds**
