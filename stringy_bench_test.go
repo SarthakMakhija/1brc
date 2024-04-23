@@ -192,6 +192,24 @@ BenchmarkPrintableResult10K-16    	    2384	   5228728 ns/op
 BenchmarkPrintableResult10K-16    	    2283	   5280616 ns/op
 BenchmarkPrintableResult10K-16    	    2331	   5191176 ns/op
 */
+
+/*
+After using AppendFloat in formatting temperatures and using a common presized buffer (64 bytes)
+obtained from bytes.Buffer.
+
+go test -run none -bench PrintableResult  -benchtime 10s -count 6
+goos: linux
+goarch: amd64
+pkg: 1brc
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkPrintableResult10K-16    	    3046	   3716811 ns/op
+BenchmarkPrintableResult10K-16    	    2995	   3693907 ns/op
+BenchmarkPrintableResult10K-16    	    3018	   3680901 ns/op
+BenchmarkPrintableResult10K-16    	    3418	   3738388 ns/op
+BenchmarkPrintableResult10K-16    	    3316	   3803371 ns/op
+BenchmarkPrintableResult10K-16    	    3007	   3643766 ns/op
+*/
 func BenchmarkPrintableResult10K(b *testing.B) {
 	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
 	for entry := 1; entry <= 10_000; entry++ {

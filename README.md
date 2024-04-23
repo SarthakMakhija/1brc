@@ -38,6 +38,8 @@ sys	0m0.013s
 2. Avoid temperature copy: 6d55773195e8a61f730b3294658e3edf83949591
 
 ```shell
+time ./main -f ../fixture/1M_weather_stations.csv
+
 real	0m0.242s
 user	0m0.240s
 sys	0m0.008s
@@ -48,6 +50,8 @@ sys	0m0.008s
 1. TreeMap to SwissMap: df968e00890879a6b8ad92aee42d8828d4e8ea2f: 
 
 ```shell
+time ./main -f ../fixture/1M_weather_stations.csv
+
 real	0m0.085s
 user	0m0.068s
 sys	0m0.001s
@@ -59,6 +63,8 @@ sys	0m0.001s
 2. Avoid the cost of uint16 conversion in convert.go: 955b97663012557163a25514adcec971d5fff2df
 
 ```shell
+time ./main -f ../fixture/1M_weather_stations.csv
+
 real	0m0.129s
 user	0m0.102s
 sys	0m0.008s
@@ -70,6 +76,8 @@ sys	0m0.008s
 2. Optimizes PrintableResult: 95b67977fde89049efd97d0a40218e9e3ce87d2c
 
 ```shell
+time ./main -f ../fixture/1M_weather_stations.csv
+
 real	0m0.064s
 user	0m0.064s
 sys	0m0.000s
