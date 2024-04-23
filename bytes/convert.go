@@ -8,7 +8,10 @@ import (
 
 var errFloatParse = errors.New("cannot parse float64")
 
-const fractionPartRepresentation = float64(10)
+const (
+	fractionPartRepresentation = float64(10)
+	minusSign                  = byte('-')
+)
 
 // toFloat64 simple to float64 conversion.
 // It requires . to be present, will fail if . is missing.
@@ -24,9 +27,9 @@ func Format(temperature float64, slice []byte) string {
 
 func convert(input []byte) (float64, error) {
 	var asFloat float64
-	minus := input[0] == '-'
 
-	integerValue, currentIndex := integerPart(input)
+	minus := input[0] == minusSign
+	integerValue, currentIndex := integerPart(input, minus)
 	if input[currentIndex] == '.' {
 		currentIndex++
 		fractionalValue := input[currentIndex] - '0'
@@ -41,13 +44,11 @@ func convert(input []byte) (float64, error) {
 	return 0, fmt.Errorf("%v, input %s", errFloatParse, input)
 }
 
-func integerPart(input []byte) (uint8, uint) {
+func integerPart(input []byte, minus bool) (uint8, uint) {
 	currentIndex := uint(0)
-	minus := input[0] == '-'
 	if minus {
 		currentIndex++
 	}
-
 	integerValue := uint8(0)
 	for input[currentIndex] != '.' {
 		integerValue = integerValue*10 + (input[currentIndex] - '0')
