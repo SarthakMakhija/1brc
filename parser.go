@@ -7,7 +7,6 @@ import (
 	"github.com/dolthub/swiss"
 	"io"
 	"sort"
-	"strconv"
 )
 
 type StationTemperatureStatistics struct {
@@ -21,13 +20,14 @@ type StationTemperatureStatistics struct {
 func (statistic StationTemperatureStatistics) stringify(stationName string, buffer *bytes2.Buffer) string {
 	buffer.Reset()
 
+	temperatureBytes := make([]byte, 0, 64)
 	buffer.WriteString(stationName)
 	buffer.WriteByte(':')
-	buffer.WriteString(strconv.FormatFloat(statistic.minTemperature, 'f', -1, 64))
+	buffer.WriteString(bytes.Format(statistic.minTemperature, temperatureBytes))
 	buffer.WriteByte('/')
-	buffer.WriteString(strconv.FormatFloat(statistic.averageTemperature, 'f', -1, 64))
+	buffer.WriteString(bytes.Format(statistic.averageTemperature, temperatureBytes))
 	buffer.WriteByte('/')
-	buffer.WriteString(strconv.FormatFloat(statistic.maxTemperature, 'f', -1, 64))
+	buffer.WriteString(bytes.Format(statistic.maxTemperature, temperatureBytes))
 
 	return buffer.String()
 }

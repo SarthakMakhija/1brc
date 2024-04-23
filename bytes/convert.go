@@ -3,6 +3,7 @@ package bytes
 import (
 	"errors"
 	"fmt"
+	"strconv"
 )
 
 var errFloatParse = errors.New("cannot parse float64")
@@ -14,6 +15,11 @@ const fractionPartRepresentation = float64(10)
 // It does not consider + or infinity symbol.
 func toFloat64(input []byte) (float64, error) {
 	return convert(input)
+}
+
+func Format(temperature float64, slice []byte) string {
+	appended := strconv.AppendFloat(slice, temperature, 'f', -1, 64)
+	return string(appended)
 }
 
 func convert(input []byte) (float64, error) {
