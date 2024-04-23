@@ -82,3 +82,16 @@ real	0m0.064s
 user	0m0.064s
 sys	0m0.000s
 ```
+
+### Changes: Round 6
+
+1. Optimizes stringify by using AppendFloat: 4b36cb3d9c844a6378e1c6857ef28f2baecf5d1b
+2. Optimizes PrintableResult by using a common byte slice: a498ac67a57c2c1760e4ce6ae08116e3ce3e2269
+
+```shell
+time ./main -f ../fixture/1M_weather_stations.csv
+
+real	0m0.089s
+user	0m0.052s
+sys	0m0.015s
+```
