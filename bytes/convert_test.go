@@ -38,9 +38,8 @@ func TestFormat(t *testing.T) {
 		{input: -40.1, expected: "-40.1"},
 	}
 
-	temperatureBytes := make([]byte, 0, 64)
 	for _, row := range inputTable {
-		result := Format(row.input, temperatureBytes)
+		result := Format(row.input)
 		assert.Equal(t, row.expected, result)
 	}
 }

@@ -17,19 +17,18 @@ type StationTemperatureStatistics struct {
 	averageTemperature   float64
 }
 
-func (statistic StationTemperatureStatistics) stringify(stationName string, buffer *bytes2.Buffer) string {
-	buffer.Reset()
+func (statistic StationTemperatureStatistics) stringify(stationName string, resultBuffer *bytes2.Buffer) string {
+	resultBuffer.Reset()
 
-	temperatureBytes := make([]byte, 0, 64)
-	buffer.WriteString(stationName)
-	buffer.WriteByte(':')
-	buffer.WriteString(bytes.Format(statistic.minTemperature, temperatureBytes))
-	buffer.WriteByte('/')
-	buffer.WriteString(bytes.Format(statistic.averageTemperature, temperatureBytes))
-	buffer.WriteByte('/')
-	buffer.WriteString(bytes.Format(statistic.maxTemperature, temperatureBytes))
+	resultBuffer.WriteString(stationName)
+	resultBuffer.WriteByte(':')
+	resultBuffer.WriteString(bytes.Format(statistic.minTemperature))
+	resultBuffer.WriteByte('/')
+	resultBuffer.WriteString(bytes.Format(statistic.averageTemperature))
+	resultBuffer.WriteByte('/')
+	resultBuffer.WriteString(bytes.Format(statistic.maxTemperature))
 
-	return buffer.String()
+	return resultBuffer.String()
 }
 
 const (
@@ -40,8 +39,9 @@ const (
 )
 
 type StationTemperatureStatisticsResult struct {
-	statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]
-	printableBuffer         *bytes2.Buffer
+	statisticsByStationName    *swiss.Map[string, *StationTemperatureStatistics]
+	printableTemperatureBuffer []byte
+	printableBuffer            *bytes2.Buffer
 }
 
 func NewStationTemperatureStatisticsResult(statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]) StationTemperatureStatisticsResult {
@@ -49,8 +49,9 @@ func NewStationTemperatureStatisticsResult(statisticsByStationName *swiss.Map[st
 	printableBuffer.Grow(printableBufferSizePerStatistic)
 
 	return StationTemperatureStatisticsResult{
-		statisticsByStationName: statisticsByStationName,
-		printableBuffer:         printableBuffer,
+		statisticsByStationName:    statisticsByStationName,
+		printableTemperatureBuffer: make([]byte, 0, 64),
+		printableBuffer:            printableBuffer,
 	}
 }
 

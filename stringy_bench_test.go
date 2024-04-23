@@ -86,6 +86,23 @@ BenchmarkStringify-16    	48939277	       249.1 ns/op
 BenchmarkStringify-16    	48832756	       250.5 ns/op
 BenchmarkStringify-16    	49280673	       241.1 ns/op
 */
+
+/*
+After using strconv.AppendFloat using a common byte slice for minTemperature, averageTemperature, maxTemperature.
+
+go test -run none -bench Stringify -benchtime 10s -count 6
+goos: linux
+goarch: amd64
+pkg: 1brc
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkStringify-16    	68620284	       166.4 ns/op
+BenchmarkStringify-16    	70571535	       168.1 ns/op
+BenchmarkStringify-16    	66017992	       167.2 ns/op
+BenchmarkStringify-16    	70535119	       168.1 ns/op
+BenchmarkStringify-16    	67409528	       166.9 ns/op
+BenchmarkStringify-16    	71639605	       168.1 ns/op
+*/
 func BenchmarkStringify(b *testing.B) {
 	statistic := StationTemperatureStatistics{
 		minTemperature:     -10.3,
