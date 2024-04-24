@@ -119,3 +119,7 @@ Based on the above numbers:
 - **10 million rows** are being processed in **0.532 seconds**
 - **10^7 rows** in **532000000 nanoseconds**
 - **Each row** is being processed in **53.2 nanoseconds**
+
+### Changes: Round 7
+
+1. Optimizes convert: f078d76e953495ae618e6b3d6c61cf9a75e40cd0
