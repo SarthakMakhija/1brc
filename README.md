@@ -18,6 +18,8 @@ user	0m0.786s
 sys	0m0.037s
 ```
 
+This branch `profiling_1` focuses on improving CPU bound operations.
+
 ### Changes: Round1
 
 1. 08ec5886e9a632fbc22dab0c32808fe2de05e618: Changed the map value to be a pointer to StationTemperatureStatistics to save the cost of Put operation.
