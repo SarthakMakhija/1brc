@@ -1,4 +1,4 @@
-package brc
+package parser
 
 import (
 	bytes2 "bytes"

@@ -1,7 +1,7 @@
 package bench
 
 import (
-	brc "1brc"
+	brc "1brc/parser"
 	"bufio"
 	"os"
 	"testing"

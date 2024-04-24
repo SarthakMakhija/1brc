@@ -1,7 +1,7 @@
 package main
 
 import (
-	brc "1brc"
+	brc "1brc/parser"
 	"bufio"
 	"flag"
 	"fmt"
