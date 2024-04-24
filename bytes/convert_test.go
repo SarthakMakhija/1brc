@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestToFloat64(t *testing.T) {
+func TestToToTemperature(t *testing.T) {
 	inputTable := []struct {
 		input    []byte
 		expected float64

@@ -2,7 +2,6 @@ package bytes
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 )
 
@@ -26,33 +25,34 @@ func Format(temperature float64, slice []byte) string {
 }
 
 func convert(input []byte) (float64, error) {
-	var asTemperature float64
-
 	minus := input[0] == minusSign
-	integerValue, currentIndex := integerPart(input, minus)
-	if input[currentIndex] == '.' {
-		currentIndex++
-		fractionalValue := input[currentIndex] - '0'
-		eligibleFloat := uint16(integerValue)*10 + uint16(fractionalValue)
-
-		asTemperature = float64(eligibleFloat) / fractionPartRepresentation
-		if minus {
-			asTemperature = -asTemperature
-		}
-		return asTemperature, nil
+	inputSlice := input
+	if minus {
+		inputSlice = input[1:]
 	}
-	return 0, fmt.Errorf("%v, input %s", errParseTemperature, input)
+
+	integerValue, currentIndex := integerPart(inputSlice, minus)
+	currentIndex++
+
+	fractionalValue := inputSlice[currentIndex] - '0'
+	eligibleFloat := uint16(integerValue)*10 + uint16(fractionalValue)
+
+	asTemperature := float64(eligibleFloat) / fractionPartRepresentation
+	if minus {
+		asTemperature = -asTemperature
+	}
+	return asTemperature, nil
 }
 
 func integerPart(input []byte, minus bool) (uint8, uint) {
 	currentIndex := uint(0)
-	if minus {
-		currentIndex++
-	}
 	integerValue := uint8(0)
-	for input[currentIndex] != '.' {
-		integerValue = integerValue*10 + (input[currentIndex] - '0')
-		currentIndex++
+
+	for index, ch := range input {
+		if ch == '.' {
+			return integerValue, uint(index)
+		}
+		integerValue = integerValue*10 + (ch - '0')
 	}
 	return integerValue, currentIndex
 }
