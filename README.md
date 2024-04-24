@@ -18,7 +18,7 @@ user	0m0.786s
 sys	0m0.037s
 ```
 
-This branch `profiling_1` focuses on improving CPU bound operations.
+This branch `profiling_1` focuses on improving CPU bound and IO operations for a single core.
 
 ### Changes: Round1
 
