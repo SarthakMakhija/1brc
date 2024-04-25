@@ -1,7 +1,8 @@
 package main
 
 import (
-	brc "1brc/parser"
+	brc "1brc"
+	"1brc/parser"
 	"bufio"
 	"flag"
 	"fmt"
@@ -35,12 +36,13 @@ func print1brcStatistics(fileName string) {
 	_, _ = io.WriteString(outputDevice, printableResult(parse(file)))
 }
 
-func printableResult(result brc.StationTemperatureStatisticsResult) string {
+func printableResult(result parser.StationTemperatureStatisticsResult) string {
 	return result.PrintableResult()
 }
 
-func parse(file *os.File) brc.StationTemperatureStatisticsResult {
-	temperatureStatisticsResult, err := brc.Parse(bufio.NewReader(file))
+func parse(file *os.File) parser.StationTemperatureStatisticsResult {
+	temperatureStatisticsResult, err :=
+		parser.ParseV2(bufio.NewReaderSize(file, brc.BufferSize))
 	if err != nil {
 		panic(fmt.Errorf("error parsing the file %v, %v", *fileName, err))
 	}
