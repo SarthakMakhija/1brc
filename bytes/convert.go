@@ -1,11 +1,8 @@
 package bytes
 
 import (
-	"errors"
 	"strconv"
 )
-
-var errParseTemperature = errors.New("cannot parse temperature")
 
 const (
 	fractionPartRepresentation = float64(10)

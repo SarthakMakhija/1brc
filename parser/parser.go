@@ -26,11 +26,20 @@ func (statistic StationTemperatureStatistics) stringify(
 
 	resultBuffer.WriteString(stationName)
 	resultBuffer.WriteByte(':')
-	resultBuffer.WriteString(bytes.Format(statistic.minTemperature, temperatureBuffer.Bytes()))
+	resultBuffer.WriteString(bytes.Format(
+		statistic.minTemperature,
+		temperatureBuffer.Bytes(),
+	))
 	resultBuffer.WriteByte('/')
-	resultBuffer.WriteString(bytes.Format(statistic.averageTemperature, temperatureBuffer.Bytes()))
+	resultBuffer.WriteString(bytes.Format(
+		statistic.aggregateTemperature/float64(statistic.totalEntries),
+		temperatureBuffer.Bytes(),
+	))
 	resultBuffer.WriteByte('/')
-	resultBuffer.WriteString(bytes.Format(statistic.maxTemperature, temperatureBuffer.Bytes()))
+	resultBuffer.WriteString(bytes.Format(
+		statistic.maxTemperature,
+		temperatureBuffer.Bytes(),
+	))
 
 	return resultBuffer.String()
 }
@@ -78,7 +87,6 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 			existingStatistics.maxTemperature = maxTemperature
 			existingStatistics.aggregateTemperature = temperature + existingStatistics.aggregateTemperature
 			existingStatistics.totalEntries = existingStatistics.totalEntries + 1
-			existingStatistics.averageTemperature = (existingStatistics.aggregateTemperature) / float64(existingStatistics.totalEntries)
 		}
 	}
 	return NewStationTemperatureStatisticsResult(statisticsByStationName), nil

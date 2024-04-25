@@ -66,6 +66,5 @@ func updateStatistics(stationName []byte, temperature float64, statisticsByStati
 		existingStatistics.maxTemperature = maxTemperature
 		existingStatistics.aggregateTemperature = temperature + existingStatistics.aggregateTemperature
 		existingStatistics.totalEntries = existingStatistics.totalEntries + 1
-		existingStatistics.averageTemperature = (existingStatistics.aggregateTemperature) / float64(existingStatistics.totalEntries)
 	}
 }

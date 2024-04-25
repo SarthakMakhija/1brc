@@ -50,7 +50,7 @@ func (result StationTemperatureStatisticsResult) averageTemperatureOf(stationNam
 	if !ok {
 		return 0.0
 	}
-	return statistic.averageTemperature
+	return statistic.aggregateTemperature / float64(statistic.totalEntries)
 }
 
 func (result StationTemperatureStatisticsResult) allStationsSorted() []string {
