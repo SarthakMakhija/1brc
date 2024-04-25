@@ -25,16 +25,16 @@ func Format(temperature float64, slice []byte) string {
 }
 
 func convert(input []byte) (float64, error) {
+	fractionalValue := input[len(input)-1] //bound check eliminated further in the code
+
 	minus := input[0] == minusSign
 	inputSlice := input
 	if minus {
 		inputSlice = input[1:]
 	}
 
-	integerValue, currentIndex := integerPart(inputSlice)
-	currentIndex++
-
-	fractionalValue := inputSlice[currentIndex] - '0'
+	integerValue := integerPart(inputSlice)
+	fractionalValue = fractionalValue - '0'
 	eligibleFloat := uint16(integerValue)*10 + uint16(fractionalValue)
 
 	asTemperature := float64(eligibleFloat) / fractionPartRepresentation
@@ -44,15 +44,14 @@ func convert(input []byte) (float64, error) {
 	return asTemperature, nil
 }
 
-func integerPart(input []byte) (uint8, uint) {
-	currentIndex := uint(0)
+func integerPart(input []byte) uint8 {
 	integerValue := uint8(0)
 
-	for index, ch := range input {
+	for _, ch := range input {
 		if ch == '.' {
-			return integerValue, uint(index)
+			return integerValue
 		}
 		integerValue = integerValue*10 + (ch - '0')
 	}
-	return integerValue, currentIndex
+	return integerValue
 }
