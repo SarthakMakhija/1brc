@@ -16,9 +16,8 @@ func ToTemperature(input []byte) (float64, error) {
 	return convert(input)
 }
 
-func Format(temperature float64, slice []byte) string {
-	appended := strconv.AppendFloat(slice[:], temperature, 'f', -1, 64)
-	return string(appended)
+func Format(temperature float64, slice []byte) []byte {
+	return strconv.AppendFloat(slice[:], temperature, 'f', -1, 64)
 }
 
 func convert(input []byte) (float64, error) {

@@ -75,7 +75,7 @@ func (result StationTemperatureStatisticsResult) PrintableResult() string {
 
 	for _, stationName := range stationNames {
 		statistic, _ := result.get(stationName)
-		output.WriteString(statistic.stringify(stationName, result.printableTemperatureBuffer, result.printableBuffer))
+		output.Write(statistic.stringify(stationName, result.printableTemperatureBuffer, result.printableBuffer))
 		output.WriteByte(';')
 	}
 	output.WriteByte('}')

@@ -41,6 +41,6 @@ func TestFormat(t *testing.T) {
 	slice := make([]byte, 0, 64)
 	for _, row := range inputTable {
 		result := Format(row.input, slice)
-		assert.Equal(t, row.expected, result)
+		assert.Equal(t, row.expected, string(result))
 	}
 }

@@ -20,28 +20,28 @@ func (statistic StationTemperatureStatistics) stringify(
 	stationName string,
 	temperatureBuffer *bytes2.Buffer,
 	resultBuffer *bytes2.Buffer,
-) string {
+) []byte {
 	temperatureBuffer.Reset()
 	resultBuffer.Reset()
 
 	resultBuffer.WriteString(stationName)
 	resultBuffer.WriteByte(':')
-	resultBuffer.WriteString(bytes.Format(
+	resultBuffer.Write(bytes.Format(
 		statistic.minTemperature,
 		temperatureBuffer.Bytes(),
 	))
 	resultBuffer.WriteByte('/')
-	resultBuffer.WriteString(bytes.Format(
+	resultBuffer.Write(bytes.Format(
 		statistic.aggregateTemperature/float64(statistic.totalEntries),
 		temperatureBuffer.Bytes(),
 	))
 	resultBuffer.WriteByte('/')
-	resultBuffer.WriteString(bytes.Format(
+	resultBuffer.Write(bytes.Format(
 		statistic.maxTemperature,
 		temperatureBuffer.Bytes(),
 	))
 
-	return resultBuffer.String()
+	return resultBuffer.Bytes()
 }
 
 const (
