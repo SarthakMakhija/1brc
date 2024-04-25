@@ -43,6 +43,7 @@ func printableResult(result parser.StationTemperatureStatisticsResult) string {
 func parse(file *os.File) parser.StationTemperatureStatisticsResult {
 	temperatureStatisticsResult, err :=
 		parser.ParseV2(bufio.NewReaderSize(file, brc.BufferSize))
+
 	if err != nil {
 		panic(fmt.Errorf("error parsing the file %v, %v", *fileName, err))
 	}

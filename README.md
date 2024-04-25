@@ -123,3 +123,23 @@ Based on the above numbers:
 ### Changes: Round 7
 
 1. Optimizes convert: f078d76e953495ae618e6b3d6c61cf9a75e40cd0
+
+
+### Changes: Round 8
+
+1. Removes one bound check in convert: 68a9b2eed52f47f118d79e350aa16941a8e91b12
+2. Modifies Parser (ParserV2) to use BufferedReader: 7875185495f428703e9f58421547685dcb19a543
+3. Avoids calculation of average for each row: 3f76070fa309bc6b6206080e33acaa12ba658f13
+4. Avoids the cost of byte slice to string conversion in stringify: e7088f65d46c23cef127c550cf0ff56275707cbe
+
+```shell
+time ./main -f ../fixture/10M_weather_stations.csv
+
+real	0m0.442s
+user	0m0.392s
+sys	0m0.035s
+```
+
+- **10 million rows** are being processed in **0m0.442s seconds**
+- **10^7 rows** in **442000000 nanoseconds**
+- **Each row** is being processed in **44.2 nanoseconds**
