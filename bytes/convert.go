@@ -31,7 +31,7 @@ func convert(input []byte) (float64, error) {
 		inputSlice = input[1:]
 	}
 
-	integerValue, currentIndex := integerPart(inputSlice, minus)
+	integerValue, currentIndex := integerPart(inputSlice)
 	currentIndex++
 
 	fractionalValue := inputSlice[currentIndex] - '0'
@@ -44,7 +44,7 @@ func convert(input []byte) (float64, error) {
 	return asTemperature, nil
 }
 
-func integerPart(input []byte, minus bool) (uint8, uint) {
+func integerPart(input []byte) (uint8, uint) {
 	currentIndex := uint(0)
 	integerValue := uint8(0)
 
