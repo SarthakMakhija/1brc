@@ -50,7 +50,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 
 	for scanner.Scan() {
 		line := scanner.Bytes()
-		stationName, temperature, err := temperatureByStationName(line)
+		stationName, temperature, err := bytes.SplitIntoStationNameAndTemperature(line)
 		if err != nil {
 			if err == io.EOF {
 				return NewStationTemperatureStatisticsResult(statisticsByStationName), nil
@@ -82,12 +82,4 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 		}
 	}
 	return NewStationTemperatureStatisticsResult(statisticsByStationName), nil
-}
-
-func temperatureByStationName(line []byte) ([]byte, float64, error) {
-	stationName, temperature, err := bytes.SplitIntoStationNameAndTemperature(line)
-	if err != nil {
-		return nil, 0, err
-	}
-	return stationName, temperature, nil
 }
