@@ -122,9 +122,8 @@ BenchmarkStringify-16    	66237178	       181.6 ns/op
 */
 func BenchmarkStringify(b *testing.B) {
 	statistic := StationTemperatureStatistics{
-		minTemperature:     -10.3,
-		maxTemperature:     10.8,
-		averageTemperature: 5.6,
+		minTemperature: -103,
+		maxTemperature: 108,
 	}
 	stationName := "New Mexico"
 
@@ -214,9 +213,8 @@ func BenchmarkPrintableResult10K(b *testing.B) {
 	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
 	for entry := 1; entry <= 10_000; entry++ {
 		statisticsByStationName.Put(fmt.Sprintf("New Mexico %v", entry), &StationTemperatureStatistics{
-			minTemperature:     -10.3,
-			maxTemperature:     10.8,
-			averageTemperature: 5.6,
+			minTemperature: -103,
+			maxTemperature: 108,
 		})
 	}
 	statisticsResult := NewStationTemperatureStatisticsResult(statisticsByStationName)

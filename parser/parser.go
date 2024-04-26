@@ -9,11 +9,10 @@ import (
 )
 
 type StationTemperatureStatistics struct {
-	minTemperature       float64
-	maxTemperature       float64
-	aggregateTemperature float64
+	minTemperature       bytes.Temperature
+	maxTemperature       bytes.Temperature
+	aggregateTemperature bytes.Temperature
 	totalEntries         uint64
-	averageTemperature   float64
 }
 
 func (statistic StationTemperatureStatistics) stringify(
@@ -31,8 +30,9 @@ func (statistic StationTemperatureStatistics) stringify(
 		temperatureBuffer.Bytes(),
 	))
 	resultBuffer.WriteByte('/')
-	resultBuffer.Write(bytes.Format(
-		statistic.aggregateTemperature/float64(statistic.totalEntries),
+	averageTemperature := float32(statistic.aggregateTemperature) / float32(statistic.totalEntries)
+	resultBuffer.Write(bytes.FormatTemperatureAsFloat32(
+		averageTemperature*0.1,
 		temperatureBuffer.Bytes(),
 	))
 	resultBuffer.WriteByte('/')
@@ -73,7 +73,6 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 				maxTemperature:       temperature,
 				aggregateTemperature: temperature,
 				totalEntries:         1,
-				averageTemperature:   temperature,
 			})
 		} else {
 			minTemperature, maxTemperature := existingStatistics.minTemperature, existingStatistics.maxTemperature

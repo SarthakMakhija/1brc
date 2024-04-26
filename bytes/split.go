@@ -8,7 +8,7 @@ const separator = byte(';')
 
 var ErrInvalidLineFormat = errors.New("invalid line format")
 
-func SplitIntoStationNameAndTemperature(line []byte) ([]byte, float64, error) {
+func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error) {
 	lineLength := len(line)
 	for index := lineLength - 1; index >= 0; index-- {
 		if line[index] == separator {
@@ -16,5 +16,5 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, float64, error) {
 			return line[:index], temperature, err
 		}
 	}
-	return nil, 0, ErrInvalidLineFormat
+	return nil, -1, ErrInvalidLineFormat
 }

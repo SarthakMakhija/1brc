@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"1brc/bytes"
 	bytes2 "bytes"
 	"github.com/dolthub/swiss"
 	"sort"
@@ -29,28 +30,29 @@ func (result StationTemperatureStatisticsResult) get(stationName string) (*Stati
 	return result.statisticsByStationName.Get(stationName)
 }
 
-func (result StationTemperatureStatisticsResult) minTemperatureOf(stationName string) float64 {
+func (result StationTemperatureStatisticsResult) minTemperatureOf(stationName string) float32 {
 	statistic, ok := result.statisticsByStationName.Get(stationName)
 	if !ok {
 		return 0.0
 	}
-	return statistic.minTemperature
+	return bytes.TemperatureAsFloat32(statistic.minTemperature)
 }
 
-func (result StationTemperatureStatisticsResult) maxTemperatureOf(stationName string) float64 {
+func (result StationTemperatureStatisticsResult) maxTemperatureOf(stationName string) float32 {
 	statistic, ok := result.statisticsByStationName.Get(stationName)
 	if !ok {
 		return 0.0
 	}
-	return statistic.maxTemperature
+	return bytes.TemperatureAsFloat32(statistic.maxTemperature)
 }
 
-func (result StationTemperatureStatisticsResult) averageTemperatureOf(stationName string) float64 {
+func (result StationTemperatureStatisticsResult) averageTemperatureOf(stationName string) float32 {
 	statistic, ok := result.statisticsByStationName.Get(stationName)
 	if !ok {
 		return 0.0
 	}
-	return statistic.aggregateTemperature / float64(statistic.totalEntries)
+	averageTemperature := float32(statistic.aggregateTemperature) / float32(statistic.totalEntries)
+	return averageTemperature * 0.1
 }
 
 func (result StationTemperatureStatisticsResult) allStationsSorted() []string {

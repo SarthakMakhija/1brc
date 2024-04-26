@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-var GlobalSink float64
+var GlobalSink Temperature
 
 /*
 Benchtime had to be increased and the benchmark had to be changed from a single ToTemperature to a loop, to
@@ -107,7 +107,7 @@ BenchmarkConvertToTemperature-16    	18560593	       644.5 ns/op
 BenchmarkConvertToTemperature-16    	18618092	       645.4 ns/op
 */
 func BenchmarkConvertToTemperature(b *testing.B) {
-	var localSink float64
+	var localSink Temperature
 	input := []byte("-10.443")
 	for i := 0; i < b.N; i++ {
 		for count := 1; count <= 200; count++ {

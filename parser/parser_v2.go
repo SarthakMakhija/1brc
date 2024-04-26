@@ -44,7 +44,7 @@ func ParseV2(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 	return NewStationTemperatureStatisticsResult(statisticsByStationName), nil
 }
 
-func updateStatistics(stationName []byte, temperature float64, statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]) {
+func updateStatistics(stationName []byte, temperature bytes.Temperature, statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]) {
 	existingStatistics, ok := statisticsByStationName.Get(string(stationName))
 	if !ok {
 		statisticsByStationName.Put(string(stationName), &StationTemperatureStatistics{
@@ -52,7 +52,6 @@ func updateStatistics(stationName []byte, temperature float64, statisticsByStati
 			maxTemperature:       temperature,
 			aggregateTemperature: temperature,
 			totalEntries:         1,
-			averageTemperature:   temperature,
 		})
 	} else {
 		minTemperature, maxTemperature := existingStatistics.minTemperature, existingStatistics.maxTemperature

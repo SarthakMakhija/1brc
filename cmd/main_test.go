@@ -13,7 +13,7 @@ func Test1BrcStatistics(t *testing.T) {
 	print1brcStatistics("../fixture/10_weather_stations.txt")
 
 	assert.Equal(t,
-		"{Canberra:7/7/7;Halifax:10/10/10;Mogadishu:6/48/90;Odesa:6/27/66;Tirana:3/6/9;}",
+		"{Canberra:7.0/7.0/7.0;Halifax:10.0/10.0/10.0;Mogadishu:6.0/48.0/90.0;Odesa:6.0/27.0/66.0;Tirana:3.0/6.0/9.0;}",
 		string(outputBuffer.Bytes()),
 	)
 }

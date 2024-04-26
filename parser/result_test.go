@@ -14,7 +14,7 @@ func TestPrintableResult(t *testing.T) {
 	printableResult := result.PrintableResult()
 
 	assert.Equal(t,
-		"{Canberra:6.1/6.1/6.1;Mogadishu:5.9/6.35/6.8;Odesa:10.2/10.2/10.2;Tirana:9.3/12.2/15.1;}",
+		"{Canberra:6.1/6.1/6.1;Mogadishu:5.9/6.3/6.8;Odesa:10.2/10.2/10.2;Tirana:9.3/12.2/15.1;}",
 		printableResult,
 	)
 }
@@ -27,7 +27,7 @@ func TestPrintableResultWithRepetitionOfSameStations(t *testing.T) {
 	printableResult := result.PrintableResult()
 
 	assert.Equal(t,
-		"{Canberra:6.1/6.1/6.1;Mogadishu:5.9/6.35/6.8;Odesa:10.2/10.2/10.2;Tirana:9.3/12.2/15.1;}",
+		"{Canberra:6.1/6.1/6.1;Mogadishu:5.9/6.3/6.8;Odesa:10.2/10.2/10.2;Tirana:9.3/12.2/15.1;}",
 		printableResult,
 	)
 }
