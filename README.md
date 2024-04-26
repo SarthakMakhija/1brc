@@ -143,3 +143,19 @@ sys	0m0.035s
 - **10 million rows** are being processed in **0m0.442s seconds**
 - **10^7 rows** in **442000000 nanoseconds**
 - **Each row** is being processed in **44.2 nanoseconds**
+
+### Changes: Round 9
+
+1. Changes SplitIntoStationNameAndTemperature to iterate from end to begin: a2aa8cce955647786e41d52ebe2bdc00fd0fc63f
+2. Represents temperature as int16: e3964256fafc738bbad832c36bc56983752cf594
+
+```shell
+time ./main -f ../fixture/10M_weather_stations.csv
+
+real	0m0.422s
+user	0m0.388s
+sys	0m0.020s
+```
+- **10 million rows** are being processed in **0m0.422s seconds**
+- **10^7 rows** in **422000000 nanoseconds**
+- **Each row** is being processed in **42.2 nanoseconds**
