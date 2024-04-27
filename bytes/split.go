@@ -11,8 +11,6 @@ const (
 
 var ErrInvalidLineFormat = errors.New("invalid line format")
 
-var temperatureMultiplier = [2]int16{1, 10}
-
 // SplitIntoStationNameAndTemperature expects a valid line of the format:
 // StationName;Temperature.
 // Temperature must have a single digit after . (dot).
