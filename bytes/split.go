@@ -22,7 +22,7 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 
 	fractionalValue := int16(line[lineLength-1] - '0')
 	integerValue := int16(0)
-	temperatureDigitIndex := 0
+	multiplier := int16(1)
 
 	minus := false
 	for index := lineLength - 3; index >= 0; index-- {
@@ -36,9 +36,8 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 		case minusSign:
 			minus = true
 		default:
-			multiplier := temperatureMultiplier[temperatureDigitIndex]
 			integerValue = integerValue + int16(ch-'0')*multiplier
-			temperatureDigitIndex++
+			multiplier *= 10
 		}
 	}
 	return nil, -1, ErrInvalidLineFormat
