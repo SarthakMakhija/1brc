@@ -5,8 +5,9 @@ import (
 )
 
 const (
-	separator = byte(';')
-	minusSign = byte('-')
+	separator  = byte(';')
+	minusSign  = byte('-')
+	multiplier = int16(10)
 )
 
 var ErrInvalidLineFormat = errors.New("invalid line format")
@@ -18,24 +19,22 @@ var ErrInvalidLineFormat = errors.New("invalid line format")
 func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error) {
 	lineLength := len(line)
 
-	fractionalValue := int16(line[lineLength-1] - '0')
-	integerValue := int16(0)
-	multiplier := int16(1)
+	fractionalValue := int16(line[lineLength-1] - '0') //lineLength-1 represents the fractional digit.
+	integerValue := int16(line[lineLength-3] - '0')    //lineLength-3 represents the lowest position temperature digit.
 
 	minus := false
-	for index := lineLength - 3; index >= 0; index-- {
+	for index := lineLength - 4; index >= 0; index-- {
 		switch ch := line[index]; ch {
+		case minusSign:
+			minus = true
 		case separator:
 			eligibleTemperature := integerValue*10 + (fractionalValue)
 			if minus {
 				eligibleTemperature = -eligibleTemperature
 			}
 			return line[:index], eligibleTemperature, nil
-		case minusSign:
-			minus = true
 		default:
 			integerValue = integerValue + int16(ch-'0')*multiplier
-			multiplier *= 10
 		}
 	}
 	return nil, -1, ErrInvalidLineFormat

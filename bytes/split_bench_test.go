@@ -68,6 +68,15 @@ BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	10
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         3.480 ns/op
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         3.551 ns/op
 */
+
+/*
+After changing SplitIntoStationNameAndTemperature to reduce the cost of bound checks and multiplying the
+variable `multiplier` by 10.
+
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         3.020 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         2.957 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         3.051 ns/op
+*/
 func BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B(b *testing.B) {
 	line := []byte(fmt.Sprintf("%v;%v", stationName(100), -99.9))
 	b.ResetTimer()
