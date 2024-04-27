@@ -8,12 +8,34 @@ const separator = byte(';')
 
 var ErrInvalidLineFormat = errors.New("invalid line format")
 
+var temperatureMultiplier = [2]int16{1, 10}
+
+// SplitIntoStationNameAndTemperature expects a valid line of the format:
+// StationName;Temperature.
+// Temperature must have a single digit after . (dot).
+// It does not handle any other case.
 func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error) {
 	lineLength := len(line)
-	for index := lineLength - 1; index >= 0; index-- {
-		if line[index] == separator {
-			temperature, err := ToTemperature(line[index+1:])
-			return line[:index], temperature, err
+
+	fractionalValue := int16(line[lineLength-1] - '0')
+	integerValue := int16(0)
+	temperatureDigitIndex := 0
+
+	minus := false
+	for index := lineLength - 3; index >= 0; index-- {
+		switch ch := line[index]; ch {
+		case separator:
+			eligibleTemperature := integerValue*10 + (fractionalValue)
+			if minus {
+				eligibleTemperature = -eligibleTemperature
+			}
+			return line[:index], eligibleTemperature, nil
+		case '-':
+			minus = true
+		default:
+			multiplier := temperatureMultiplier[temperatureDigitIndex]
+			integerValue = integerValue + int16(ch-'0')*multiplier
+			temperatureDigitIndex++
 		}
 	}
 	return nil, -1, ErrInvalidLineFormat
