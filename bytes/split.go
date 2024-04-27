@@ -4,7 +4,10 @@ import (
 	"errors"
 )
 
-const separator = byte(';')
+const (
+	separator = byte(';')
+	minusSign = byte('-')
+)
 
 var ErrInvalidLineFormat = errors.New("invalid line format")
 
@@ -30,7 +33,7 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 				eligibleTemperature = -eligibleTemperature
 			}
 			return line[:index], eligibleTemperature, nil
-		case '-':
+		case minusSign:
 			minus = true
 		default:
 			multiplier := temperatureMultiplier[temperatureDigitIndex]

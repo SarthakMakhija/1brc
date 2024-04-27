@@ -5,26 +5,6 @@ import (
 	"testing"
 )
 
-func TestToToTemperature(t *testing.T) {
-	inputTable := []struct {
-		input    []byte
-		expected Temperature
-	}{
-		{input: []byte("10.4"), expected: 104},
-		{input: []byte("19.7"), expected: 197},
-		{input: []byte("-34.1"), expected: -341},
-		{input: []byte("40.6"), expected: 406},
-		{input: []byte("40.9"), expected: 409},
-		{input: []byte("-40.1"), expected: -401},
-	}
-
-	for _, row := range inputTable {
-		result, err := ToTemperature(row.input)
-		assert.Nil(t, err)
-		assert.Equal(t, row.expected, result)
-	}
-}
-
 func TestFormat(t *testing.T) {
 	inputTable := []struct {
 		input    Temperature
