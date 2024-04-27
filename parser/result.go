@@ -18,7 +18,7 @@ func NewStationTemperatureStatisticsResult(statisticsByStationName *swiss.Map[st
 	printableBuffer.Grow(printableBufferSizePerStatistic)
 
 	printableTemperatureBuffer := &bytes2.Buffer{}
-	printableTemperatureBuffer.Grow(64)
+	printableTemperatureBuffer.Grow(32)
 	return StationTemperatureStatisticsResult{
 		statisticsByStationName:    statisticsByStationName,
 		printableTemperatureBuffer: printableTemperatureBuffer,
