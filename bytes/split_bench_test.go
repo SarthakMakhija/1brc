@@ -70,12 +70,12 @@ BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	10
 */
 
 /*
-After changing SplitIntoStationNameAndTemperature to reduce the cost of bound checks and multiplying the
+After changing SplitIntoStationNameAndTemperature to reduce the cost of multiplying the
 variable `multiplier` by 10.
 
-BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         3.020 ns/op
-BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         2.957 ns/op
-BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         3.051 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         3.110 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         2.964 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         3.002 ns/op
 */
 func BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B(b *testing.B) {
 	line := []byte(fmt.Sprintf("%v;%v", stationName(100), -99.9))
