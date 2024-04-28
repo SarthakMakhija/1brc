@@ -53,7 +53,7 @@ const (
 
 // Parse
 // TODO: rounding
-func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
+func Parse(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
 	scanner := bufio.NewScanner(reader)
 	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
 
@@ -64,7 +64,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 			if err == io.EOF {
 				return NewStationTemperatureStatisticsResult(statisticsByStationName), nil
 			}
-			return StationTemperatureStatisticsResult{}, err
+			return StationTemperatureStatisticsSummary{}, err
 		}
 		existingStatistics, ok := statisticsByStationName.Get(string(stationName))
 		if !ok {

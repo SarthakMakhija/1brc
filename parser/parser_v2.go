@@ -7,7 +7,7 @@ import (
 	"io"
 )
 
-func ParseV2(reader io.Reader) (StationTemperatureStatisticsResult, error) {
+func ParseV2(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
 	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
 	buffer := make([]byte, brc.ReadSize)
 
@@ -24,7 +24,7 @@ func ParseV2(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 				if buffer[index] == '\n' {
 					stationName, temperature, err := bytes.SplitIntoStationNameAndTemperature(buffer[last:index])
 					if err != nil {
-						return StationTemperatureStatisticsResult{}, err
+						return StationTemperatureStatisticsSummary{}, err
 					}
 					updateStatistics(stationName, temperature, statisticsByStationName)
 					last = index + 1
@@ -37,7 +37,7 @@ func ParseV2(reader io.Reader) (StationTemperatureStatisticsResult, error) {
 		}
 		if err != nil {
 			if err != io.EOF {
-				return StationTemperatureStatisticsResult{}, err
+				return StationTemperatureStatisticsSummary{}, err
 			}
 		}
 	}

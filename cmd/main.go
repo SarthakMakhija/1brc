@@ -36,11 +36,11 @@ func print1brcStatistics(fileName string) {
 	_, _ = io.WriteString(outputDevice, printableResult(parse(file)))
 }
 
-func printableResult(result parser.StationTemperatureStatisticsResult) string {
+func printableResult(result parser.StationTemperatureStatisticsSummary) string {
 	return result.PrintableResult()
 }
 
-func parse(file *os.File) parser.StationTemperatureStatisticsResult {
+func parse(file *os.File) parser.StationTemperatureStatisticsSummary {
 	temperatureStatisticsResult, err :=
 		parser.ParseV2(bufio.NewReaderSize(file, brc.BufferSize))
 
