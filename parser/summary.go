@@ -67,6 +67,11 @@ func (summary StationTemperatureStatisticsSummary) allStationsSorted() []string 
 	return stationNames
 }
 
+const (
+	unrollFactor = 4
+	mask         = unrollFactor - 1
+)
+
 func (summary StationTemperatureStatisticsSummary) PrintableResult() string {
 	stationNames := summary.allStationsSorted()
 	stationCount := len(stationNames)
@@ -75,10 +80,40 @@ func (summary StationTemperatureStatisticsSummary) PrintableResult() string {
 	output.Grow(printableBufferSizePerStatistic*stationCount + 2 + stationCount)
 	output.WriteByte('{')
 
-	for _, stationName := range stationNames {
+	index := 0
+	unrolledIterations, pendingIterations := stationCount/unrollFactor, stationCount&mask
+	for iteration := 1; iteration <= unrolledIterations; iteration++ {
+		stationNamesLocal := stationNames[index : index+unrollFactor : index+unrollFactor]
+
+		stationName := stationNamesLocal[0]
 		statistic, _ := summary.get(stationName)
 		output.Write(statistic.stringify(stationName, summary.printableTemperatureBuffer, summary.printableBuffer))
 		output.WriteByte(';')
+
+		stationName = stationNamesLocal[1]
+		statistic, _ = summary.get(stationName)
+		output.Write(statistic.stringify(stationName, summary.printableTemperatureBuffer, summary.printableBuffer))
+		output.WriteByte(';')
+
+		stationName = stationNamesLocal[2]
+		statistic, _ = summary.get(stationName)
+		output.Write(statistic.stringify(stationName, summary.printableTemperatureBuffer, summary.printableBuffer))
+		output.WriteByte(';')
+
+		stationName = stationNamesLocal[3]
+		statistic, _ = summary.get(stationName)
+		output.Write(statistic.stringify(stationName, summary.printableTemperatureBuffer, summary.printableBuffer))
+		output.WriteByte(';')
+
+		index += unrollFactor
+	}
+
+	for iteration := 1; iteration <= pendingIterations; iteration++ {
+		stationName := stationNames[index]
+		statistic, _ := summary.get(stationName)
+		output.Write(statistic.stringify(stationName, summary.printableTemperatureBuffer, summary.printableBuffer))
+		output.WriteByte(';')
+		index += 1
 	}
 	output.WriteByte('}')
 	return output.String()

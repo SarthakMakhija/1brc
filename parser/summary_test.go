@@ -31,3 +31,29 @@ func TestPrintableResultWithRepetitionOfSameStations(t *testing.T) {
 		printableResult,
 	)
 }
+
+func TestPrintableResultWithOddNumberOfStations(t *testing.T) {
+	input := bytes.NewReader([]byte("Odesa;10.2\nMogadishu;5.9\nTirana;15.1\nTirana;9.3\nMogadishu;6.8\nCanberra;6.1\nDelhi;8.9"))
+	result, err := Parse(input)
+
+	assert.Nil(t, err)
+	printableResult := result.PrintableResult()
+
+	assert.Equal(t,
+		"{Canberra:6.1/6.1/6.1;Delhi:8.9/8.9/8.9;Mogadishu:5.9/6.3/6.8;Odesa:10.2/10.2/10.2;Tirana:9.3/12.2/15.1;}",
+		printableResult,
+	)
+}
+
+func TestPrintableResultWithNumberOfStationsLessThanUnrollFactor(t *testing.T) {
+	input := bytes.NewReader([]byte("Odesa;10.2\nMogadishu;5.9\nMogadishu;5.9\n"))
+	result, err := Parse(input)
+
+	assert.Nil(t, err)
+	printableResult := result.PrintableResult()
+
+	assert.Equal(t,
+		"{Mogadishu:5.9/5.9/5.9;Odesa:10.2/10.2/10.2;}",
+		printableResult,
+	)
+}
