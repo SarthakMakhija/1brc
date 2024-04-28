@@ -209,6 +209,23 @@ BenchmarkPrintableResult10K-16    	    3418	   3738388 ns/op
 BenchmarkPrintableResult10K-16    	    3316	   3803371 ns/op
 BenchmarkPrintableResult10K-16    	    3007	   3643766 ns/op
 */
+
+/*
+After changing temperature to int16 and float conversion during printing.
+
+go test -run none -bench BenchmarkPrintableResult10K   -benchtime 15s -count 6
+goos: linux
+goarch: amd64
+pkg: 1brc/parser
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkPrintableResult10K-16    	    2124	   8651683 ns/op
+BenchmarkPrintableResult10K-16    	    1980	   8458294 ns/op
+BenchmarkPrintableResult10K-16    	    2179	   8724162 ns/op
+BenchmarkPrintableResult10K-16    	    2223	   8251167 ns/op
+BenchmarkPrintableResult10K-16    	    2223	   8431002 ns/op
+BenchmarkPrintableResult10K-16    	    2118	   8434239 ns/op
+*/
 func BenchmarkPrintableResult10K(b *testing.B) {
 	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
 	for entry := 1; entry <= 10_000; entry++ {
