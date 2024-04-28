@@ -226,6 +226,20 @@ BenchmarkPrintableResult10K-16    	    2223	   8251167 ns/op
 BenchmarkPrintableResult10K-16    	    2223	   8431002 ns/op
 BenchmarkPrintableResult10K-16    	    2118	   8434239 ns/op
 */
+
+/*
+After loop unrolling.
+
+go test -run none -bench BenchmarkPrintableResult10K   -benchtime 15s -count 3
+goos: linux
+goarch: amd64
+pkg: 1brc/parser
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkPrintableResult10K-16    	    4345	   3966182 ns/op
+BenchmarkPrintableResult10K-16    	    4297	   3932963 ns/op
+BenchmarkPrintableResult10K-16    	    4689	   4003364 ns/op
+*/
 func BenchmarkPrintableResult10K(b *testing.B) {
 	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
 	for entry := 1; entry <= 10_000; entry++ {
