@@ -11,7 +11,7 @@ import (
 type StationTemperatureStatistics struct {
 	minTemperature       bytes.Temperature
 	maxTemperature       bytes.Temperature
-	aggregateTemperature bytes.Temperature
+	aggregateTemperature bytes.Temperature //TODO: decide if we need int64 for this.
 	totalEntries         uint64
 }
 
