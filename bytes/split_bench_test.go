@@ -77,6 +77,23 @@ BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	10
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         2.964 ns/op
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         3.002 ns/op
 */
+
+/*
+After changing SplitIntoStationNameAndTemperature to have zero bound check.
+
+go test -run none -bench BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B -benchtime 20s -count 6 .
+goos: linux
+goarch: amd64
+pkg: 1brc/bytes
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         2.680 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         2.662 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         2.646 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         2.653 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         2.644 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16    	1000000000	         2.673 ns/op
+*/
 func BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B(b *testing.B) {
 	line := []byte(fmt.Sprintf("%v;%v", stationName(100), -99.9))
 	b.ResetTimer()

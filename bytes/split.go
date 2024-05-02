@@ -18,6 +18,9 @@ var ErrInvalidLineFormat = errors.New("invalid line format")
 // It does not handle any other case.
 func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error) {
 	lineLength := len(line)
+	if lineLength < 3 {
+		return nil, 0, ErrInvalidLineFormat
+	}
 
 	fractionalValue := int16(line[lineLength-1] - '0') //lineLength-1 represents the fractional digit.
 	integerValue := int16(line[lineLength-3] - '0')    //lineLength-3 represents the lowest position temperature digit.
@@ -30,7 +33,7 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 		case separator:
 			eligibleTemperature := integerValue*10 + (fractionalValue)
 			if minus {
-				eligibleTemperature = -eligibleTemperature
+				eligibleTemperature = ^eligibleTemperature + 1
 			}
 			return line[:index], eligibleTemperature, nil
 		default:
