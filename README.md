@@ -162,7 +162,7 @@ sys	0m0.020s
 
 ### Changes: Round 9
 
-1. Changes SplitIntoStationNameAndTemperature handle conversion of temperature: 27c53c8dd9e09d55517919cd09426f943fa95cca
+1. Changes SplitIntoStationNameAndTemperature to handle conversion of temperature: 27c53c8dd9e09d55517919cd09426f943fa95cca
 
 ```shell
 time ./main -f ../fixture/10M_weather_stations.csv
@@ -174,3 +174,20 @@ sys	0m0.016s
 - **10 million rows** are being processed in **0m0.405s seconds**
 - **10^7 rows** in **405000000 nanoseconds**
 - **Each row** is being processed in **40.5 nanoseconds**
+
+
+### Changes: Round 10
+
+1. Changes SplitIntoStationNameAndTemperature to have zero bound check: 561a90a6672a8ddb7a32feec27420bf745336441
+
+```shell
+time ./main -f ../fixture/10M_weather_stations.csv
+
+real	0m0.406s
+user	0m0.363s
+sys	0m0.028s
+```
+- **10 million rows** are being processed in **0m0.406s seconds**
+- **10^7 rows** in **405000000 nanoseconds**
+- **Each row** is being processed in **40.6 nanoseconds**
+- **No change**
