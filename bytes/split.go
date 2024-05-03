@@ -31,13 +31,13 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 		case minusSign:
 			minus = true
 		case separator:
-			eligibleTemperature := integerValue*10 + (fractionalValue)
+			eligibleTemperature := integerValue*multiplier + (fractionalValue)
 			if minus {
 				eligibleTemperature = ^eligibleTemperature + 1
 			}
 			return line[:index], eligibleTemperature, nil
 		default:
-			integerValue = integerValue + int16(ch-'0')*multiplier
+			integerValue = integerValue + int16(ch-('0'))*multiplier
 		}
 	}
 	return nil, -1, ErrInvalidLineFormat

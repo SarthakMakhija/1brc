@@ -106,6 +106,58 @@ func BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B(b *t
 	}
 }
 
+/*
+go test -run none -bench BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot -benchtime 20s -count 6 .
+goos: linux
+goarch: amd64
+pkg: 1brc/bytes
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.724 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.718 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.771 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.758 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.717 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.732 ns/op
+*/
+func BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot(b *testing.B) {
+	line := []byte(fmt.Sprintf("%v;%v", stationName(100), 9.9))
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_, _, err := SplitIntoStationNameAndTemperature(line)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+/*
+go test -run none -bench BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot -benchtime 20s -count 6 .
+goos: linux
+goarch: amd64
+pkg: 1brc/bytes
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         2.055 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         2.084 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         2.062 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         2.107 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         2.057 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         2.084 ns/op
+*/
+func BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot(b *testing.B) {
+	line := []byte(fmt.Sprintf("%v;%v", stationName(100), -9.9))
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_, _, err := SplitIntoStationNameAndTemperature(line)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func stationName(length int) string {
 	station := make([]byte, 0, length)
 	for index := 0; index < length; index++ {
