@@ -26,34 +26,35 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 	fractionalValue := int16(line[lineLength-1] - '0') //lineLength-1 represents the fractional digit.
 	integerValue := int16(line[lineLength-3] - '0')    //lineLength-3 represents the lowest position temperature digit.
 
-	ch := line[lineLength-4]
+	previousIndex := lineLength - 4
+	ch := line[previousIndex]
 	switch ch {
 	case minusSign:
 		eligibleTemperature := integerValue*multiplier + (fractionalValue)
 		eligibleTemperature = ^eligibleTemperature + 1
 		if lineLength-5 >= 0 { //prevent IsSliceInBounds checks
-			return line[:lineLength-5], eligibleTemperature, nil
+			return line[:previousIndex-1], eligibleTemperature, nil
 		}
 		return nil, -1, ErrInvalidLineFormat
 	case separator:
 		eligibleTemperature := integerValue*multiplier + (fractionalValue)
-		return line[:lineLength-4], eligibleTemperature, nil
+		return line[:previousIndex], eligibleTemperature, nil
 	default:
 		integerValue = integerValue + int16(ch-('0'))*multiplier
 	}
 
-	ch = line[lineLength-5]
-	switch ch {
+	lastIndex := lineLength - 5
+	switch line[lastIndex] {
 	case minusSign:
 		eligibleTemperature := integerValue*multiplier + (fractionalValue)
 		eligibleTemperature = ^eligibleTemperature + 1
 		if lineLength-6 >= 0 { //prevent IsSliceInBounds checks
-			return line[:lineLength-6], eligibleTemperature, nil
+			return line[:lastIndex-1], eligibleTemperature, nil
 		}
 		return nil, -1, ErrInvalidLineFormat
 	case separator:
 		eligibleTemperature := integerValue*multiplier + (fractionalValue)
-		return line[:lineLength-5], eligibleTemperature, nil
+		return line[:lastIndex], eligibleTemperature, nil
 	default:
 		return nil, -1, ErrInvalidLineFormat
 	}
