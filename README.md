@@ -208,3 +208,17 @@ sys	0m0.029s
 - **10^7 rows** in **313000000 nanoseconds**
 - **Each row** is being processed in **31.3 nanoseconds**
 
+### Changes: Round 12
+
+1. Changes BufferedReader: 41204d4714100708c2546574ea06fe1a0db7e117
+
+```shell
+time ./main -f ../fixture/10M_weather_stations.csv
+
+real	0m0.288s
+user	0m0.254s
+sys	0m0.016s
+```
+- **10 million rows** are being processed in **0m0.288 seconds**
+- **10^7 rows** in **288000000 nanoseconds**
+- **Each row** is being processed in **28.8 nanoseconds**
