@@ -56,8 +56,7 @@ func updateStatistics(stationName []byte, temperature bytes.Temperature, statist
 		minTemperature, maxTemperature := existingStatistics.minTemperature, existingStatistics.maxTemperature
 		if temperature < existingStatistics.minTemperature {
 			minTemperature = temperature
-		}
-		if temperature > existingStatistics.maxTemperature {
+		} else if temperature > existingStatistics.maxTemperature {
 			maxTemperature = temperature
 		}
 		existingStatistics.minTemperature = minTemperature

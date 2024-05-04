@@ -46,3 +46,21 @@ func TestParseWithTemperaturesForAverageTemperatureV2(t *testing.T) {
 	assert.Equal(t, float32(10.2), result.averageTemperatureOf("Odesa"))
 	assert.InDelta(t, float32(12.4), result.averageTemperatureOf("Tirana"), 0.01)
 }
+
+func TestParseWithTemperaturesForMinAverageMaxSameV2(t *testing.T) {
+	input := bytes.NewReader([]byte("Odesa;1.2\nMogadishu;1.2\nTirana;1.2\nOdesa;1.2\nMogadishu;1.2\nTirana;1.2\n"))
+	result, err := ParseV2(input)
+
+	assert.Nil(t, err)
+	assert.Equal(t, float32(1.2), result.minTemperatureOf("Odesa"))
+	assert.Equal(t, float32(1.2), result.minTemperatureOf("Mogadishu"))
+	assert.Equal(t, float32(1.2), result.minTemperatureOf("Tirana"))
+
+	assert.Equal(t, float32(1.2), result.maxTemperatureOf("Odesa"))
+	assert.Equal(t, float32(1.2), result.maxTemperatureOf("Mogadishu"))
+	assert.Equal(t, float32(1.2), result.maxTemperatureOf("Tirana"))
+
+	assert.Equal(t, float32(1.2), result.averageTemperatureOf("Odesa"))
+	assert.Equal(t, float32(1.2), result.averageTemperatureOf("Mogadishu"))
+	assert.Equal(t, float32(1.2), result.averageTemperatureOf("Tirana"))
+}
