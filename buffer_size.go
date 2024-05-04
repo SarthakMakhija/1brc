@@ -1,5 +1,5 @@
 package brc
 
 const (
-	ReadSize = 64 * 1024
+	ReadSize = 1 * 1024 * 1024
 )
