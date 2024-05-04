@@ -49,3 +49,24 @@ func TestSplitIntoStationNameAndNegativeTemperatureLessThan10(t *testing.T) {
 	assert.Equal(t, "São Paulo", string(stationName))
 	assert.Equal(t, Temperature(-14), temperature)
 }
+
+func TestSplitIntoStationNameAndTemperatureWithoutDelimiter(t *testing.T) {
+	line := []byte("São Paulo:1.4")
+	_, _, err := SplitIntoStationNameAndTemperature(line)
+
+	assert.Error(t, err)
+}
+
+func TestSplitIntoStationNameAndTemperatureWithLessThanMinLineLengthRequired(t *testing.T) {
+	line := []byte("S")
+	_, _, err := SplitIntoStationNameAndTemperature(line)
+
+	assert.Error(t, err)
+}
+
+func TestSplitIntoStationNameAndTemperatureWithTemperatureNotInRange(t *testing.T) {
+	line := []byte("São Paulo;111.4")
+	_, _, err := SplitIntoStationNameAndTemperature(line)
+
+	assert.Error(t, err)
+}

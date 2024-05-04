@@ -12,6 +12,12 @@ const (
 
 var ErrInvalidLineFormat = errors.New("invalid line format")
 
+// minLineLengthRequired is 5 as we will have:
+// a minimum of 3 bytes for the temperature,
+// 1 byte for the delimiter,
+// 1 byte for the station name
+const minLineLengthRequired = 5
+
 // SplitIntoStationNameAndTemperature expects a valid line of the format:
 // StationName;Temperature.
 // Temperature must have a single digit after . (dot).
@@ -19,7 +25,7 @@ var ErrInvalidLineFormat = errors.New("invalid line format")
 func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error) {
 	lineLength := len(line)
 	//prevent bound checks
-	if lineLength < 5 {
+	if lineLength < minLineLengthRequired {
 		return nil, 0, ErrInvalidLineFormat
 	}
 
