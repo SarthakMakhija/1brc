@@ -192,7 +192,7 @@ sys	0m0.028s
 - **Each row** is being processed in **40.6 nanoseconds**
 - **No change**
 
-### Changes: Round 10
+### Changes: Round 11
 
 1. Changes SplitIntoStationNameAndTemperature to return as soon as minus sign is encountered: b480aeedd084e42fabe8c5a0282c9e0b90906d36
 2. Replaces SwissMap with Golang's map: 3724d9f119db433ff6393a715bcba219c1d090b2
