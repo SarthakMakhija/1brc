@@ -56,11 +56,9 @@ func (summary StationTemperatureStatisticsSummary) averageTemperatureOf(stationN
 }
 
 func (summary StationTemperatureStatisticsSummary) allStationsSorted() []string {
-	stationNames := make([]string, len(summary.statisticsByStationName))
-	index := 0
+	stationNames := make([]string, 0, len(summary.statisticsByStationName))
 	for stationName, _ := range summary.statisticsByStationName {
-		stationNames[index] = stationName
-		index++
+		stationNames = append(stationNames, stationName)
 	}
 	sort.Strings(stationNames)
 	return stationNames
