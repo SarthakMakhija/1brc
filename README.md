@@ -230,11 +230,10 @@ sys	0m0.016s
 ```shell
 time ./main -f ../fixture/10M_weather_stations.csv
 
-real	0m0.250s
-user	0m0.226s
-sys	0m0.029s
+real	0m0.264s
+user	0m0.236s
+sys	0m0.016s
 ```
-- **10 million rows** are being processed in **0m0.250 seconds**
-- **10^7 rows** in **250000000 nanoseconds**
-- **Each row** is being processed in **25.5 nanoseconds**
-- **System time has increased though**
+- **10 million rows** are being processed in **0m0.264 seconds**
+- **10^7 rows** in **264000000 nanoseconds**
+- **Each row** is being processed in **26.4 nanoseconds**
