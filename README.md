@@ -222,3 +222,19 @@ sys	0m0.016s
 - **10 million rows** are being processed in **0m0.288 seconds**
 - **10^7 rows** in **288000000 nanoseconds**
 - **Each row** is being processed in **28.8 nanoseconds**
+
+### Changes: Round 13
+
+1. Changes the buffer to be read to 1Mb: 57334298b050ee1479d596394625ab3ee71c93c3
+
+```shell
+time ./main -f ../fixture/10M_weather_stations.csv
+
+real	0m0.250s
+user	0m0.226s
+sys	0m0.029s
+```
+- **10 million rows** are being processed in **0m0.250 seconds**
+- **10^7 rows** in **250000000 nanoseconds**
+- **Each row** is being processed in **25.5 nanoseconds**
+- **System time has increased though**
