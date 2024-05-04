@@ -111,6 +111,23 @@ BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16   	100
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16   	1000000000	         2.135 ns/op
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16   	1000000000	         2.100 ns/op
 */
+
+/*
+After changing SplitIntoStationNameAndTemperature and replacing loop with manual indexing.
+
+go test -run none -bench BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B -benchtime 20s -count 6 .
+goos: linux
+goarch: amd64
+pkg: 1brc/bytes
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16  	1000000000	         1.614 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16  	1000000000	         1.600 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16  	1000000000	         1.613 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16  	1000000000	         1.586 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16  	1000000000	         1.586 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B-16  	1000000000	         1.584 ns/op
+*/
 func BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100B(b *testing.B) {
 	line := []byte(fmt.Sprintf("%v;%v", stationName(100), -99.9))
 	b.ResetTimer()
@@ -154,6 +171,23 @@ BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiv
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.490 ns/op
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.476 ns/op
 */
+
+/*
+After changing SplitIntoStationNameAndTemperature and replacing loop with manual indexing.
+
+go test -run none -bench BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot -benchtime 20s -count 6 .
+goos: linux
+goarch: amd64
+pkg: 1brc/bytes
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.331 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.376 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.348 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.336 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.331 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.340 ns/op
+*/
 func BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndPositiveTemperatureWithSingleDigitBeforeDot(b *testing.B) {
 	line := []byte(fmt.Sprintf("%v;%v", stationName(100), 9.9))
 	b.ResetTimer()
@@ -196,6 +230,23 @@ BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativ
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.458 ns/op
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.460 ns/op
 BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.456 ns/op
+*/
+
+/*
+After changing SplitIntoStationNameAndTemperature and replacing loop with manual indexing.
+
+go test -run none -bench BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot -benchtime 20s -count 6 .
+goos: linux
+goarch: amd64
+pkg: 1brc/bytes
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.328 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.333 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.337 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.326 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.331 ns/op
+BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot-16    	1000000000	         1.331 ns/op
 */
 func BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNegativeTemperatureWithSingleDigitBeforeDot(b *testing.B) {
 	line := []byte(fmt.Sprintf("%v;%v", stationName(100), -9.9))
