@@ -3,12 +3,11 @@ package parser
 import (
 	brc "1brc"
 	"1brc/bytes"
-	"github.com/dolthub/swiss"
 	"io"
 )
 
 func ParseV2(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
-	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
+	statisticsByStationName := make(map[string]*StationTemperatureStatistics, 10_0000)
 	buffer := make([]byte, brc.ReadSize)
 
 	var err error
@@ -44,15 +43,15 @@ func ParseV2(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
 	return NewStationTemperatureStatisticsResult(statisticsByStationName), nil
 }
 
-func updateStatistics(stationName []byte, temperature bytes.Temperature, statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]) {
-	existingStatistics, ok := statisticsByStationName.Get(string(stationName))
+func updateStatistics(stationName []byte, temperature bytes.Temperature, statisticsByStationName map[string]*StationTemperatureStatistics) {
+	existingStatistics, ok := statisticsByStationName[string(stationName)]
 	if !ok {
-		statisticsByStationName.Put(string(stationName), &StationTemperatureStatistics{
+		statisticsByStationName[string(stationName)] = &StationTemperatureStatistics{
 			minTemperature:       temperature,
 			maxTemperature:       temperature,
 			aggregateTemperature: temperature,
 			totalEntries:         1,
-		})
+		}
 	} else {
 		minTemperature, maxTemperature := existingStatistics.minTemperature, existingStatistics.maxTemperature
 		if temperature < existingStatistics.minTemperature {

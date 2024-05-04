@@ -3,7 +3,6 @@ package parser
 import (
 	bytes2 "bytes"
 	"fmt"
-	"github.com/dolthub/swiss"
 	"testing"
 )
 
@@ -241,12 +240,13 @@ BenchmarkPrintableResult10K-16    	    4297	   3932963 ns/op
 BenchmarkPrintableResult10K-16    	    4689	   4003364 ns/op
 */
 func BenchmarkPrintableResult10K(b *testing.B) {
-	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
+	statisticsByStationName := make(map[string]*StationTemperatureStatistics, 10_0000)
+
 	for entry := 1; entry <= 10_000; entry++ {
-		statisticsByStationName.Put(fmt.Sprintf("New Mexico %v", entry), &StationTemperatureStatistics{
+		statisticsByStationName[fmt.Sprintf("New Mexico %v", entry)] = &StationTemperatureStatistics{
 			minTemperature: -103,
 			maxTemperature: 108,
-		})
+		}
 	}
 	statisticsResult := NewStationTemperatureStatisticsResult(statisticsByStationName)
 	b.ResetTimer()

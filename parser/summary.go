@@ -3,17 +3,16 @@ package parser
 import (
 	"1brc/bytes"
 	bytes2 "bytes"
-	"github.com/dolthub/swiss"
 	"sort"
 )
 
 type StationTemperatureStatisticsSummary struct {
-	statisticsByStationName    *swiss.Map[string, *StationTemperatureStatistics]
+	statisticsByStationName    map[string]*StationTemperatureStatistics
 	printableTemperatureBuffer *bytes2.Buffer
 	printableBuffer            *bytes2.Buffer
 }
 
-func NewStationTemperatureStatisticsResult(statisticsByStationName *swiss.Map[string, *StationTemperatureStatistics]) StationTemperatureStatisticsSummary {
+func NewStationTemperatureStatisticsResult(statisticsByStationName map[string]*StationTemperatureStatistics) StationTemperatureStatisticsSummary {
 	printableBuffer := &bytes2.Buffer{}
 	printableBuffer.Grow(printableBufferSizePerStatistic)
 
@@ -27,11 +26,12 @@ func NewStationTemperatureStatisticsResult(statisticsByStationName *swiss.Map[st
 }
 
 func (summary StationTemperatureStatisticsSummary) get(stationName string) (*StationTemperatureStatistics, bool) {
-	return summary.statisticsByStationName.Get(stationName)
+	statistics, ok := summary.statisticsByStationName[(stationName)]
+	return statistics, ok
 }
 
 func (summary StationTemperatureStatisticsSummary) minTemperatureOf(stationName string) float32 {
-	statistic, ok := summary.statisticsByStationName.Get(stationName)
+	statistic, ok := summary.get(stationName)
 	if !ok {
 		return 0.0
 	}
@@ -39,7 +39,7 @@ func (summary StationTemperatureStatisticsSummary) minTemperatureOf(stationName 
 }
 
 func (summary StationTemperatureStatisticsSummary) maxTemperatureOf(stationName string) float32 {
-	statistic, ok := summary.statisticsByStationName.Get(stationName)
+	statistic, ok := summary.get(stationName)
 	if !ok {
 		return 0.0
 	}
@@ -47,7 +47,7 @@ func (summary StationTemperatureStatisticsSummary) maxTemperatureOf(stationName 
 }
 
 func (summary StationTemperatureStatisticsSummary) averageTemperatureOf(stationName string) float32 {
-	statistic, ok := summary.statisticsByStationName.Get(stationName)
+	statistic, ok := summary.get(stationName)
 	if !ok {
 		return 0.0
 	}
@@ -56,13 +56,12 @@ func (summary StationTemperatureStatisticsSummary) averageTemperatureOf(stationN
 }
 
 func (summary StationTemperatureStatisticsSummary) allStationsSorted() []string {
-	stationNames := make([]string, summary.statisticsByStationName.Count())
+	stationNames := make([]string, len(summary.statisticsByStationName))
 	index := 0
-	summary.statisticsByStationName.Iter(func(stationName string, _ *StationTemperatureStatistics) (stop bool) {
+	for stationName, _ := range summary.statisticsByStationName {
 		stationNames[index] = stationName
 		index++
-		return false
-	})
+	}
 	sort.Strings(stationNames)
 	return stationNames
 }

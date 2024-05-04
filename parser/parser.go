@@ -4,7 +4,6 @@ import (
 	"1brc/bytes"
 	"bufio"
 	bytes2 "bytes"
-	"github.com/dolthub/swiss"
 	"io"
 )
 
@@ -55,7 +54,7 @@ const (
 // TODO: rounding
 func Parse(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
 	scanner := bufio.NewScanner(reader)
-	statisticsByStationName := swiss.NewMap[string, *StationTemperatureStatistics](10_000)
+	statisticsByStationName := make(map[string]*StationTemperatureStatistics, 10_0000)
 
 	for scanner.Scan() {
 		line := scanner.Bytes()
@@ -66,14 +65,14 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
 			}
 			return StationTemperatureStatisticsSummary{}, err
 		}
-		existingStatistics, ok := statisticsByStationName.Get(string(stationName))
+		existingStatistics, ok := statisticsByStationName[(string(stationName))]
 		if !ok {
-			statisticsByStationName.Put(string(stationName), &StationTemperatureStatistics{
+			statisticsByStationName[string(stationName)] = &StationTemperatureStatistics{
 				minTemperature:       temperature,
 				maxTemperature:       temperature,
 				aggregateTemperature: temperature,
 				totalEntries:         1,
-			})
+			}
 		} else {
 			minTemperature, maxTemperature := existingStatistics.minTemperature, existingStatistics.maxTemperature
 			if temperature < existingStatistics.minTemperature {
