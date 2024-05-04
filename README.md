@@ -191,3 +191,20 @@ sys	0m0.028s
 - **10^7 rows** in **405000000 nanoseconds**
 - **Each row** is being processed in **40.6 nanoseconds**
 - **No change**
+
+### Changes: Round 10
+
+1. Changes SplitIntoStationNameAndTemperature to return as soon as minus sign is encountered: b480aeedd084e42fabe8c5a0282c9e0b90906d36
+2. Replaces SwissMap with Golang's map: 3724d9f119db433ff6393a715bcba219c1d090b2
+
+```shell
+time ./main -f ../fixture/10M_weather_stations.csv
+
+real	0m0.313s
+user	0m0.273s
+sys	0m0.029s
+```
+- **10 million rows** are being processed in **0m0.313 seconds**
+- **10^7 rows** in **313000000 nanoseconds**
+- **Each row** is being processed in **31.3 nanoseconds**
+
