@@ -77,9 +77,7 @@ func (summary StationTemperatureStatisticsSummary) PrintableResult() string {
 	output.Grow(printableBufferSizePerStatistic*stationCount + 2 + stationCount)
 	output.WriteByte('{')
 
-	index := 0
-	unrolledIterations, pendingIterations := stationCount/unrollFactor, stationCount&mask
-	for iteration := 1; iteration <= unrolledIterations; iteration++ {
+	for index := 0; index+3 < stationCount; index += unrollFactor {
 		stationNamesLocal := stationNames[index : index+unrollFactor : index+unrollFactor]
 
 		stationName := stationNamesLocal[0]
@@ -105,12 +103,14 @@ func (summary StationTemperatureStatisticsSummary) PrintableResult() string {
 		index += unrollFactor
 	}
 
-	for iteration := 1; iteration <= pendingIterations; iteration++ {
-		stationName := stationNames[index]
-		statistic, _ := summary.get(stationName)
-		output.Write(statistic.stringify(stationName, summary.printableTemperatureBuffer, summary.printableBuffer))
-		output.WriteByte(';')
-		index += 1
+	newIndex := stationCount - (stationCount & mask)
+	if newIndex >= 0 && newIndex < stationCount {
+		for ; newIndex < stationCount; newIndex++ {
+			stationName := stationNames[newIndex]
+			statistic, _ := summary.get(stationName)
+			output.Write(statistic.stringify(stationName, summary.printableTemperatureBuffer, summary.printableBuffer))
+			output.WriteByte(';')
+		}
 	}
 	output.WriteByte('}')
 	return output.String()
