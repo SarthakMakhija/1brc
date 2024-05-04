@@ -253,6 +253,19 @@ BenchmarkPrintableResult10K-16    	    4540	   3913199 ns/op
 BenchmarkPrintableResult10K-16    	    4575	   3867402 ns/op
 BenchmarkPrintableResult10K-16          4668	   3898248 ns/op
 */
+
+/*
+After changing PrintableResult to avoid one bound check and the cost of division.
+
+goos: linux
+goarch: amd64
+pkg: 1brc/parser
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkPrintableResult10K-16    	    6172	   2970922 ns/op
+BenchmarkPrintableResult10K-16    	    5871	   2940468 ns/op
+BenchmarkPrintableResult10K-16    	    6064	   3006562 ns/op
+*/
 func BenchmarkPrintableResult10K(b *testing.B) {
 	statisticsByStationName := make(map[string]*StationTemperatureStatistics, 10_0000)
 
