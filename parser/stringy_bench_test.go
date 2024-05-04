@@ -239,6 +239,20 @@ BenchmarkPrintableResult10K-16    	    4345	   3966182 ns/op
 BenchmarkPrintableResult10K-16    	    4297	   3932963 ns/op
 BenchmarkPrintableResult10K-16    	    4689	   4003364 ns/op
 */
+
+/*
+After changing swissmap with golang's map.
+
+go test -run none -bench BenchmarkPrintableResult10K   -benchtime 15s -count 3
+goos: linux
+goarch: amd64
+pkg: 1brc/parser
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkPrintableResult10K-16    	    4540	   3913199 ns/op
+BenchmarkPrintableResult10K-16    	    4575	   3867402 ns/op
+BenchmarkPrintableResult10K-16          4668	   3898248 ns/op
+*/
 func BenchmarkPrintableResult10K(b *testing.B) {
 	statisticsByStationName := make(map[string]*StationTemperatureStatistics, 10_0000)
 
