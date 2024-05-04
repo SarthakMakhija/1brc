@@ -1,9 +1,7 @@
 package main
 
 import (
-	brc "1brc"
 	"1brc/parser"
-	"bufio"
 	"flag"
 	"fmt"
 	"io"
@@ -41,8 +39,7 @@ func printableResult(result parser.StationTemperatureStatisticsSummary) string {
 }
 
 func parse(file *os.File) parser.StationTemperatureStatisticsSummary {
-	temperatureStatisticsResult, err :=
-		parser.ParseV2(bufio.NewReaderSize(file, brc.BufferSize))
+	temperatureStatisticsResult, err := parser.ParseV2(file)
 
 	if err != nil {
 		panic(fmt.Errorf("error parsing the file %v, %v", *fileName, err))
