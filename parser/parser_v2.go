@@ -53,14 +53,11 @@ func updateStatistics(stationName []byte, temperature bytes.Temperature, statist
 			totalEntries:         1,
 		}
 	} else {
-		minTemperature, maxTemperature := existingStatistics.minTemperature, existingStatistics.maxTemperature
 		if temperature < existingStatistics.minTemperature {
-			minTemperature = temperature
+			existingStatistics.minTemperature = temperature
 		} else if temperature > existingStatistics.maxTemperature {
-			maxTemperature = temperature
+			existingStatistics.maxTemperature = temperature
 		}
-		existingStatistics.minTemperature = minTemperature
-		existingStatistics.maxTemperature = maxTemperature
 		existingStatistics.aggregateTemperature = temperature + existingStatistics.aggregateTemperature
 		existingStatistics.totalEntries = existingStatistics.totalEntries + 1
 	}
