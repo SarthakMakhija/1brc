@@ -245,3 +245,15 @@ real	0m34.071s
 user	0m28.415s
 sys	0m3.707s
 ```
+
+### Changes: Round 13
+
+1. Introduces parallel file parsing (assuming number of cores > 1): 4a5bc5a1b51a62a939b2a68281c9a15a1891a0f3
+
+```shell
+time ./main -f ../fixture/1B_weather_stations.txt
+
+real	0m3.593s
+user	0m44.904s
+sys	0m5.482s
+```
