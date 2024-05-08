@@ -20,7 +20,21 @@ type Chunk struct {
 	size        int64
 }
 
-func SplitFile(file *os.File, fileSize int64, numParts int) ([]Chunk, error) {
+func SplitFile(fileName string, numParts int) ([]Chunk, error) {
+	file, err := os.Open(fileName)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = file.Close()
+	}()
+
+	fileStat, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	fileSize := fileStat.Size()
 	splitSize := fileSize / int64(numParts)
 	buffer := make([]byte, maxLineLength)
 	parts := make([]Chunk, 0, numParts)

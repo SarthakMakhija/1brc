@@ -9,18 +9,10 @@ import (
 )
 
 func TestFileSplitInTwoParts(t *testing.T) {
+	chunks, err := SplitFile("../fixture/10_weather_stations.txt", 2)
+	assert.NoError(t, err)
+
 	file, err := os.Open("../fixture/10_weather_stations.txt")
-	assert.NoError(t, err)
-
-	fileStat, err := file.Stat()
-	assert.NoError(t, err)
-
-	chunks, err := SplitFile(file, fileStat.Size(), 2)
-	assert.NoError(t, err)
-
-	_ = file.Close()
-
-	file, err = os.Open("../fixture/10_weather_stations.txt")
 	assert.NoError(t, err)
 
 	defer func() {
@@ -31,18 +23,10 @@ func TestFileSplitInTwoParts(t *testing.T) {
 }
 
 func TestFileSplitInTwoPartsWithEachPartContent(t *testing.T) {
+	chunks, err := SplitFile("../fixture/10_weather_stations.txt", 2)
+	assert.NoError(t, err)
+
 	file, err := os.Open("../fixture/10_weather_stations.txt")
-	assert.NoError(t, err)
-
-	fileStat, err := file.Stat()
-	assert.NoError(t, err)
-
-	chunks, err := SplitFile(file, fileStat.Size(), 2)
-	assert.NoError(t, err)
-
-	_ = file.Close()
-
-	file, err = os.Open("../fixture/10_weather_stations.txt")
 	assert.NoError(t, err)
 
 	assert.Len(t, chunks, 2)
@@ -68,18 +52,10 @@ func TestFileSplitInTwoPartsWithEachPartContent(t *testing.T) {
 }
 
 func TestFileSplitInTwoPartsWithEachChunkTerminatedByNewLine(t *testing.T) {
+	chunks, err := SplitFile("../fixture/10_weather_stations.txt", 2)
+	assert.NoError(t, err)
+
 	file, err := os.Open("../fixture/10_weather_stations.txt")
-	assert.NoError(t, err)
-
-	fileStat, err := file.Stat()
-	assert.NoError(t, err)
-
-	chunks, err := SplitFile(file, fileStat.Size(), 2)
-	assert.NoError(t, err)
-
-	_ = file.Close()
-
-	file, err = os.Open("../fixture/10_weather_stations.txt")
 	assert.NoError(t, err)
 
 	defer func() {
@@ -102,18 +78,10 @@ func TestFileSplitInTwoPartsWithEachChunkTerminatedByNewLine(t *testing.T) {
 }
 
 func TestFileSplitInThreePartsWithEachPartContent(t *testing.T) {
+	chunks, err := SplitFile("../fixture/10_weather_stations.txt", 3)
+	assert.NoError(t, err)
+
 	file, err := os.Open("../fixture/10_weather_stations.txt")
-	assert.NoError(t, err)
-
-	fileStat, err := file.Stat()
-	assert.NoError(t, err)
-
-	chunks, err := SplitFile(file, fileStat.Size(), 3)
-	assert.NoError(t, err)
-
-	_ = file.Close()
-
-	file, err = os.Open("../fixture/10_weather_stations.txt")
 	assert.NoError(t, err)
 
 	assert.Len(t, chunks, 2)
