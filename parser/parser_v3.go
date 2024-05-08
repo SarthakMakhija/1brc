@@ -59,7 +59,7 @@ func readChunk(file *os.File, chunk bytes.Chunk) (StationTemperatureStatisticsCh
 				if buffer[index] == '\n' {
 					stationName, temperature, err := bytes.SplitIntoStationNameAndTemperature(buffer[last:index])
 					if err != nil {
-						return StationTemperatureStatisticsChunkSummary{}, err
+						panic(err)
 					}
 					updateStatistics(stationName, temperature, statisticsByStationName)
 					last = index + 1
@@ -90,7 +90,7 @@ func update(stationName string, summary *StationTemperatureStatistics, statistic
 			existingStatistics.minTemperature = summary.minTemperature
 		}
 		if summary.maxTemperature > existingStatistics.maxTemperature {
-			existingStatistics.maxTemperature = summary.minTemperature
+			existingStatistics.maxTemperature = summary.maxTemperature
 		}
 		existingStatistics.aggregateTemperature = summary.aggregateTemperature + existingStatistics.aggregateTemperature
 		existingStatistics.totalEntries = summary.totalEntries + existingStatistics.totalEntries
