@@ -237,3 +237,11 @@ sys	0m0.016s
 - **10 million rows** are being processed in **0m0.264 seconds**
 - **10^7 rows** in **264000000 nanoseconds**
 - **Each row** is being processed in **26.4 nanoseconds**
+
+### Results on single core for 1B records with 413 unique stations
+
+```shell
+real	0m34.071s
+user	0m28.415s
+sys	0m3.707s
+```
