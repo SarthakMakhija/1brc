@@ -14,7 +14,7 @@ func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
 		return StationTemperatureStatisticsSummary{}, err
 	}
 
-	numberOfParts := runtime.NumCPU()
+	numberOfParts := runtime.NumCPU() //TODO: adjust this?
 	chunks, err := bytes.SplitFile(filePath, numberOfParts)
 	if err != nil {
 		return StationTemperatureStatisticsSummary{}, err
