@@ -7,7 +7,7 @@ test:
 build_and_test: build test
 
 executable:
-	go build -o cmd/main cmd/main.go
+	go build -o cmd/main cmd/main.go cmd/main_parser_v2.go
 
 build_executable: build executable
 

@@ -10,50 +10,39 @@ import (
 	"runtime/pprof"
 )
 
-var fileName = flag.String("f", "", "file name")
-var cpuProfileFileName = flag.String("cpuprofile", "", "write cpu profile to file")
-var outputDevice io.Writer = os.Stdout
-
 func main() {
 	flag.Parse()
-	assertFileName()
-	if mayBeStartCpuProfile() {
+	assertFileNameV3()
+	if mayBeStartCpuProfileV3() {
 		defer pprof.StopCPUProfile()
 	}
-	print1brcStatistics(*fileName)
+	print1brcStatisticsV3(*fileName)
 }
 
-func print1brcStatistics(fileName string) {
-	file, err := os.Open(fileName)
-	if err != nil {
-		panic(fmt.Errorf("error opening the file %v, %v", fileName, err))
-	}
-	defer func() {
-		_ = file.Close()
-	}()
-	_, _ = io.WriteString(outputDevice, printableResult(parse(file)))
+func print1brcStatisticsV3(fileName string) {
+	_, _ = io.WriteString(outputDevice, printableResultV3(parseV3(fileName)))
 }
 
-func printableResult(result parser.StationTemperatureStatisticsSummary) string {
+func printableResultV3(result parser.StationTemperatureStatisticsSummary) string {
 	return result.PrintableResult()
 }
 
-func parse(file *os.File) parser.StationTemperatureStatisticsSummary {
-	temperatureStatisticsResult, err := parser.ParseV2(file)
+func parseV3(fileName string) parser.StationTemperatureStatisticsSummary {
+	temperatureStatisticsResult, err := parser.ParseV3(fileName)
 
 	if err != nil {
-		panic(fmt.Errorf("error parsing the file %v, %v", *fileName, err))
+		panic(fmt.Errorf("error parsing the file %v, %v", fileName, err))
 	}
 	return temperatureStatisticsResult
 }
 
-func assertFileName() {
+func assertFileNameV3() {
 	if *fileName == "" {
 		panic("-f flag is required")
 	}
 }
 
-func mayBeStartCpuProfile() bool {
+func mayBeStartCpuProfileV3() bool {
 	if *cpuProfileFileName != "" {
 		cpuProfileFile, err := os.Create(*cpuProfileFileName)
 		if err != nil {
