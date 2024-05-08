@@ -10,8 +10,8 @@ import (
 type StationTemperatureStatistics struct {
 	minTemperature       bytes.Temperature
 	maxTemperature       bytes.Temperature
-	aggregateTemperature bytes.Temperature //TODO: decide if we need int64 for this.
-	totalEntries         uint64
+	aggregateTemperature int64 //TODO: decide if we need int64 for this.
+	totalEntries         int64
 }
 
 func (statistic StationTemperatureStatistics) stringify(
@@ -70,7 +70,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
 			statisticsByStationName[string(stationName)] = &StationTemperatureStatistics{
 				minTemperature:       temperature,
 				maxTemperature:       temperature,
-				aggregateTemperature: temperature,
+				aggregateTemperature: int64(temperature),
 				totalEntries:         1,
 			}
 		} else {
@@ -83,7 +83,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
 			}
 			existingStatistics.minTemperature = minTemperature
 			existingStatistics.maxTemperature = maxTemperature
-			existingStatistics.aggregateTemperature = temperature + existingStatistics.aggregateTemperature
+			existingStatistics.aggregateTemperature = int64(temperature) + existingStatistics.aggregateTemperature
 			existingStatistics.totalEntries = existingStatistics.totalEntries + 1
 		}
 	}

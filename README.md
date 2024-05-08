@@ -257,3 +257,11 @@ real	0m3.593s
 user	0m44.904s
 sys	0m5.482s
 ```
+
+### After changing the aggregate temperature to int64
+
+```shell
+real	0m5.810s
+user	1m18.949s
+sys	0m4.310s
+```
