@@ -12,7 +12,7 @@ type StationTemperatureStatisticsSummary struct {
 	printableBuffer            *bytes2.Buffer
 }
 
-func NewStationTemperatureStatisticsResult(statisticsByStationName map[string]*StationTemperatureStatistics) StationTemperatureStatisticsSummary {
+func NewStationTemperatureStatisticsSummary(statisticsByStationName map[string]*StationTemperatureStatistics) StationTemperatureStatisticsSummary {
 	printableBuffer := &bytes2.Buffer{}
 	printableBuffer.Grow(printableBufferSizePerStatistic)
 

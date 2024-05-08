@@ -40,7 +40,7 @@ func ParseV2(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
 			}
 		}
 	}
-	return NewStationTemperatureStatisticsResult(statisticsByStationName), nil
+	return NewStationTemperatureStatisticsSummary(statisticsByStationName), nil
 }
 
 func updateStatistics(stationName []byte, temperature bytes.Temperature, statisticsByStationName map[string]*StationTemperatureStatistics) {

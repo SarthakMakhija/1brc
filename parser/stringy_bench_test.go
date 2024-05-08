@@ -275,7 +275,7 @@ func BenchmarkPrintableResult10K(b *testing.B) {
 			maxTemperature: 108,
 		}
 	}
-	statisticsResult := NewStationTemperatureStatisticsResult(statisticsByStationName)
+	statisticsResult := NewStationTemperatureStatisticsSummary(statisticsByStationName)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {

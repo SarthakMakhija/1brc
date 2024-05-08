@@ -61,7 +61,7 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
 		stationName, temperature, err := bytes.SplitIntoStationNameAndTemperature(line)
 		if err != nil {
 			if err == io.EOF {
-				return NewStationTemperatureStatisticsResult(statisticsByStationName), nil
+				return NewStationTemperatureStatisticsSummary(statisticsByStationName), nil
 			}
 			return StationTemperatureStatisticsSummary{}, err
 		}
@@ -87,5 +87,5 @@ func Parse(reader io.Reader) (StationTemperatureStatisticsSummary, error) {
 			existingStatistics.totalEntries = existingStatistics.totalEntries + 1
 		}
 	}
-	return NewStationTemperatureStatisticsResult(statisticsByStationName), nil
+	return NewStationTemperatureStatisticsSummary(statisticsByStationName), nil
 }

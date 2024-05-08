@@ -43,7 +43,7 @@ func TestFileSplitInTwoPartsWithEachPartContent(t *testing.T) {
 
 	chunkContent := strings.Builder{}
 	for _, chunk := range chunks {
-		buffer := make([]byte, chunk.size)
+		buffer := make([]byte, chunk.Size)
 		_, _ = file.Read(buffer)
 		chunkContent.WriteString(string(buffer))
 	}
@@ -64,13 +64,13 @@ func TestFileSplitInTwoPartsWithEachChunkTerminatedByNewLine(t *testing.T) {
 
 	assert.Len(t, chunks, 2)
 
-	_, _ = file.Seek(chunks[1].startOffset-1, io.SeekStart)
+	_, _ = file.Seek(chunks[1].StartOffset-1, io.SeekStart)
 	newLineBuffer := make([]byte, 1)
 	_, _ = file.Read(newLineBuffer)
 
 	assert.Equal(t, "\n", string(newLineBuffer))
 
-	_, _ = file.Seek(chunks[0].size+chunks[1].size-1, io.SeekStart)
+	_, _ = file.Seek(chunks[0].Size+chunks[1].Size-1, io.SeekStart)
 	newLineBuffer = make([]byte, 1)
 	_, _ = file.Read(newLineBuffer)
 
@@ -98,7 +98,7 @@ func TestFileSplitInThreePartsWithEachPartContent(t *testing.T) {
 
 	chunkContent := strings.Builder{}
 	for _, chunk := range chunks {
-		buffer := make([]byte, chunk.size)
+		buffer := make([]byte, chunk.Size)
 		_, _ = file.Read(buffer)
 		chunkContent.WriteString(string(buffer))
 	}

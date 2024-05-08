@@ -16,8 +16,8 @@ const (
 )
 
 type Chunk struct {
-	startOffset int64
-	size        int64
+	StartOffset int64
+	Size        int64
 }
 
 func SplitFile(fileName string, numParts int) ([]Chunk, error) {
@@ -43,7 +43,7 @@ func SplitFile(fileName string, numParts int) ([]Chunk, error) {
 	for part := 0; part < numParts; part++ {
 		if part == numParts-1 {
 			if offset < fileSize {
-				parts = append(parts, Chunk{startOffset: offset, size: fileSize - offset})
+				parts = append(parts, Chunk{StartOffset: offset, Size: fileSize - offset})
 			}
 			break
 		}
@@ -63,7 +63,7 @@ func SplitFile(fileName string, numParts int) ([]Chunk, error) {
 
 		remaining := len(chunk) - newlineIndex - 1
 		nextOffset := seekOffset + int64(len(chunk)) - int64(remaining)
-		parts = append(parts, Chunk{startOffset: offset, size: nextOffset - offset})
+		parts = append(parts, Chunk{StartOffset: offset, Size: nextOffset - offset})
 		offset = nextOffset
 	}
 	return parts, nil
