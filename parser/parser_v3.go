@@ -9,6 +9,12 @@ import (
 	"runtime"
 )
 
+/**
+1. Avoid bytes2.IndexByte
+	- This will change ToTemperature
+2. See if NewStatisticsByStationNameMap can be converted to a method
+*/
+
 const (
 	capacity      = 1 << 14
 	fnv1aOffset64 = 14695981039346656037
@@ -85,7 +91,7 @@ func readChunk(file *os.File, chunk bytes.Chunk) (StationTemperatureStatisticsCh
 func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *StatisticsByStationNameMap) []byte {
 	buffer := currentBuffer[:]
 	for len(buffer) > 0 {
-		newLineIndex := bytes2.IndexByte(buffer, '\n')
+		newLineIndex := bytes2.IndexByte(buffer, '\n') //TODO: avoid this
 		if newLineIndex == -1 {
 			return buffer
 		}
@@ -118,7 +124,7 @@ func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *Statistic
 			statistics.totalEntries += 1
 			statisticsByStationName.entryCount += 1
 		}
-		if newLineIndex+1 < len(buffer) {
+		if newLineIndex+1 < len(buffer) { //TODO: avoid this
 			buffer = buffer[newLineIndex+1:]
 		} else {
 			return nil
@@ -166,6 +172,7 @@ func NewStatisticsByStationNameMap(capacity int) *StatisticsByStationNameMap {
 	}
 }
 
+// TODO: maybe a method
 func (statisticsByStationName *StatisticsByStationNameMap) Get(hash uint64, stationName []byte) *StationTemperatureStatistics {
 	index := hash & statisticsByStationName.mask
 	entry := &statisticsByStationName.entries[index]
