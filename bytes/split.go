@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	separator  = byte(';')
+	Separator  = byte(';')
 	minusSign  = byte('-')
 	multiplier = int16(10)
 )
@@ -42,7 +42,7 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 			return line[:previousIndex-1], eligibleTemperature, nil
 		}
 		return nil, -1, ErrInvalidLineFormat
-	case separator:
+	case Separator:
 		eligibleTemperature := integerValue*multiplier + (fractionalValue)
 		return line[:previousIndex], eligibleTemperature, nil
 	default:
@@ -58,7 +58,7 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 			return line[:lastIndex-1], eligibleTemperature, nil
 		}
 		return nil, -1, ErrInvalidLineFormat
-	case separator:
+	case Separator:
 		eligibleTemperature := integerValue*multiplier + (fractionalValue)
 		return line[:lastIndex], eligibleTemperature, nil
 	default:
@@ -66,7 +66,7 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 	}
 }
 
-// ToTemperature assumes valid input which starts after the separator (;).
+// ToTemperature assumes valid input which starts after the Separator (;).
 func ToTemperature(slice []byte) Temperature {
 	negative := slice[0] == minusSign
 	if negative {
