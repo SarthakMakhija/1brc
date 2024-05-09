@@ -3,6 +3,7 @@ package parser
 import (
 	brc "1brc"
 	"1brc/bytes"
+	bytes2 "bytes"
 	"io"
 	"os"
 	"runtime"
@@ -95,4 +96,40 @@ func update(stationName string, summary *StationTemperatureStatistics, statistic
 		existingStatistics.aggregateTemperature = summary.aggregateTemperature + existingStatistics.aggregateTemperature
 		existingStatistics.totalEntries = summary.totalEntries + existingStatistics.totalEntries
 	}
+}
+
+type Entry struct {
+	station       [100]byte
+	statistics    StationTemperatureStatistics
+	hash          uint64
+	stationLength int
+}
+
+type StatisticsByStationNameMap struct {
+	entries  []Entry
+	capacity int
+	mask     uint64
+}
+
+func NewStatisticsByStationNameMap(capacity int) *StatisticsByStationNameMap {
+	return &StatisticsByStationNameMap{
+		entries:  make([]Entry, capacity),
+		capacity: capacity,
+		mask:     uint64(capacity - 1),
+	}
+}
+
+func (statisticsByStationName StatisticsByStationNameMap) Get(hash uint64, stationName []byte) *StationTemperatureStatistics {
+	index := hash & statisticsByStationName.mask
+	entry := &statisticsByStationName.entries[index]
+
+	for entry.stationLength > 0 && !(entry.hash == hash && bytes2.Equal(entry.station[:entry.stationLength], stationName)) {
+		index = (index + 1) & statisticsByStationName.mask
+		entry = &statisticsByStationName.entries[index]
+	}
+	if entry.stationLength == 0 {
+		entry.hash = hash
+		entry.stationLength = copy(entry.station[:], stationName)
+	}
+	return &entry.statistics
 }
