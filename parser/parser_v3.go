@@ -10,12 +10,20 @@ import (
 )
 
 const (
-	capacity      = 1 << 20
+	capacity      = 1 << 14
 	fnv1aOffset64 = 14695981039346656037
 	fnv1aPrime64  = 1099511628211
 )
 
 func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return StationTemperatureStatisticsSummary{}, err
+	}
+	defer func() {
+		_ = file.Close()
+	}()
+
 	numberOfParts := runtime.NumCPU() //TODO: adjust this?
 	chunks, err := bytes.SplitFile(filePath, numberOfParts)
 	if err != nil {
@@ -25,7 +33,7 @@ func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
 	chunkSummaries := make(chan StationTemperatureStatisticsChunkSummary, len(chunks))
 	for _, chunk := range chunks {
 		go func(chunk bytes.Chunk) {
-			statisticsChunkSummary, err := readChunk(filePath, chunk)
+			statisticsChunkSummary, err := readChunk(file, chunk)
 			if err != nil {
 				panic(err)
 			}
@@ -46,21 +54,8 @@ func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
 	return NewStationTemperatureStatisticsSummary(statisticsByStationName), nil
 }
 
-func readChunk(filePath string, chunk bytes.Chunk) (StationTemperatureStatisticsChunkSummary, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return StationTemperatureStatisticsChunkSummary{}, err
-	}
-	defer func() {
-		_ = file.Close()
-	}()
-
-	_, err = file.Seek(chunk.StartOffset, io.SeekStart)
-	if err != nil {
-		return StationTemperatureStatisticsChunkSummary{}, err
-	}
-
-	reader := io.LimitedReader{R: file, N: chunk.Size}
+func readChunk(file *os.File, chunk bytes.Chunk) (StationTemperatureStatisticsChunkSummary, error) {
+	reader := io.NewSectionReader(file, chunk.StartOffset, chunk.Size)
 	statisticsByStationName := NewStatisticsByStationNameMap(capacity)
 	buffer := make([]byte, brc.ReadSize)
 
@@ -184,15 +179,4 @@ func (statisticsByStationName *StatisticsByStationNameMap) Get(hash uint64, stat
 		entry.stationLength = copy(entry.station[:], stationName)
 	}
 	return &entry.statistics
-}
-
-func (statisticsByStationName *StatisticsByStationNameMap) ToGoMap() map[string]*StationTemperatureStatistics {
-	statistics := make(map[string]*StationTemperatureStatistics, statisticsByStationName.entryCount)
-	for index := range statisticsByStationName.entries {
-		entry := &statisticsByStationName.entries[index]
-		if entry.statistics.totalEntries > 0 {
-			statistics[string(entry.station[:entry.stationLength])] = &entry.statistics
-		}
-	}
-	return statistics
 }
