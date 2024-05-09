@@ -65,3 +65,23 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 		return nil, -1, ErrInvalidLineFormat
 	}
 }
+
+// ToTemperature assumes valid input which starts after the separator (;).
+func ToTemperature(slice []byte) Temperature {
+	negative := slice[0] == minusSign
+	if negative {
+		slice = slice[1:]
+	}
+
+	var eligibleTemperature Temperature
+	switch len(slice) {
+	case 3:
+		eligibleTemperature = Temperature(slice[0])*10 + Temperature(slice[2]) - '0'*(10+1)
+	case 4:
+		eligibleTemperature = Temperature(slice[0])*100 + Temperature(slice[1])*10 + Temperature(slice[3]) - '0'*(100+10+1)
+	}
+	if negative {
+		eligibleTemperature = ^eligibleTemperature + 1
+	}
+	return eligibleTemperature
+}

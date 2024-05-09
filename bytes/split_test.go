@@ -70,3 +70,31 @@ func TestSplitIntoStationNameAndTemperatureWithTemperatureNotInRange(t *testing.
 
 	assert.Error(t, err)
 }
+
+func TestConvertsTheSliceToTemperature(t *testing.T) {
+	line := []byte("10.1")
+	temperature := ToTemperature(line)
+
+	assert.Equal(t, Temperature(101), temperature)
+}
+
+func TestConvertsTheSliceToNegativeTemperature(t *testing.T) {
+	line := []byte("-99.9")
+	temperature := ToTemperature(line)
+
+	assert.Equal(t, Temperature(-999), temperature)
+}
+
+func TestConvertsTheSliceToTemperatureLessThan10(t *testing.T) {
+	line := []byte("1.4")
+	temperature := ToTemperature(line)
+
+	assert.Equal(t, Temperature(14), temperature)
+}
+
+func TestConvertsTheSliceToNegativeTemperatureLessThan10(t *testing.T) {
+	line := []byte("-1.4")
+	temperature := ToTemperature(line)
+
+	assert.Equal(t, Temperature(-14), temperature)
+}

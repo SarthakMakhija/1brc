@@ -260,6 +260,35 @@ func BenchmarkSplitIntoStationNameAndTemperatureWithStationNameAsLongAs100BAndNe
 	}
 }
 
+/*
+go test -run none -bench BenchmarkConvertToNegativeTemperature -benchtime 20s -count 6 .
+
+goos: linux
+goarch: amd64
+pkg: 1brc/bytes
+cpu: 13th Gen Intel(R) Core(TM) i7-1360P
+
+BenchmarkConvertToNegativeTemperature-16    	1000000000	         0.9289 ns/op
+BenchmarkConvertToNegativeTemperature-16    	1000000000	         0.9132 ns/op
+BenchmarkConvertToNegativeTemperature-16    	1000000000	         0.9426 ns/op
+BenchmarkConvertToNegativeTemperature-16    	1000000000	         0.9129 ns/op
+BenchmarkConvertToNegativeTemperature-16    	1000000000	         0.9114 ns/op
+BenchmarkConvertToNegativeTemperature-16    	1000000000	         0.9181 ns/op
+*/
+var GlobalTemperature Temperature
+
+func BenchmarkConvertToNegativeTemperature(b *testing.B) {
+	slice := []byte("-99.9")
+	b.ResetTimer()
+
+	var localTemperature Temperature
+	for i := 0; i < b.N; i++ {
+		temperature := ToTemperature(slice)
+		localTemperature = temperature
+	}
+	GlobalTemperature = localTemperature
+}
+
 func stationName(length int) string {
 	station := make([]byte, 0, length)
 	for index := 0; index < length; index++ {
