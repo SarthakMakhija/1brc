@@ -76,7 +76,8 @@ func ToTemperature(slice []byte) Temperature {
 	var eligibleTemperature Temperature
 	switch len(slice) {
 	case 3:
-		eligibleTemperature = Temperature(slice[0])*10 + Temperature(slice[2]) - '0'*(10+1)
+		temperature := (slice[0]-'0')*10 + slice[2] - '0'
+		eligibleTemperature = Temperature(temperature)
 	case 4:
 		eligibleTemperature = Temperature(slice[0])*100 + Temperature(slice[1])*10 + Temperature(slice[3]) - '0'*(100+10+1)
 	}
