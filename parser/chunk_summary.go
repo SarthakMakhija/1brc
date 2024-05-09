@@ -1,10 +1,10 @@
 package parser
 
 type StationTemperatureStatisticsChunkSummary struct {
-	statisticsByStationName map[string]*StationTemperatureStatistics
+	statisticsByStationName *StatisticsByStationNameMap
 }
 
-func NewStationTemperatureStatisticsChunkSummary(statisticsByStationName map[string]*StationTemperatureStatistics) StationTemperatureStatisticsChunkSummary {
+func NewStationTemperatureStatisticsChunkSummary(statisticsByStationName *StatisticsByStationNameMap) StationTemperatureStatisticsChunkSummary {
 	return StationTemperatureStatisticsChunkSummary{
 		statisticsByStationName: statisticsByStationName,
 	}

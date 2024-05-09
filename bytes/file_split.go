@@ -56,12 +56,12 @@ func SplitFile(fileName string, numParts int) ([]Chunk, error) {
 		n, _ := io.ReadFull(file, buffer)
 		chunk := buffer[:n]
 
-		newlineIndex := bytes.LastIndexByte(chunk, '\n')
-		if newlineIndex < 0 {
+		lastNewlineIndex := bytes.LastIndexByte(chunk, '\n')
+		if lastNewlineIndex < 0 {
 			return nil, fmt.Errorf("newline character not found at offset %d", offset+splitSize-maxLineLength)
 		}
 
-		remaining := len(chunk) - newlineIndex - 1
+		remaining := len(chunk) - lastNewlineIndex - 1
 		nextOffset := seekOffset + int64(len(chunk)) - int64(remaining)
 		parts = append(parts, Chunk{StartOffset: offset, Size: nextOffset - offset})
 		offset = nextOffset

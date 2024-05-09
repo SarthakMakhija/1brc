@@ -81,7 +81,7 @@ func ToTemperature(slice []byte) Temperature {
 		eligibleTemperature = Temperature(slice[0])*100 + Temperature(slice[1])*10 + Temperature(slice[3]) - '0'*(100+10+1)
 	}
 	if negative {
-		eligibleTemperature = ^eligibleTemperature + 1
+		eligibleTemperature = -eligibleTemperature
 	}
 	return eligibleTemperature
 }
