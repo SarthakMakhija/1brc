@@ -9,10 +9,6 @@ import (
 	"runtime"
 )
 
-/**
-2. Change capacity (currently 1<<14)
-*/
-
 const (
 	capacity      = 1 << 14
 	fnv1aOffset64 = 14695981039346656037
@@ -35,7 +31,7 @@ func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
 		_ = file.Close()
 	}()
 
-	numberOfParts := runtime.NumCPU() //TODO: adjust this?
+	numberOfParts := runtime.NumCPU()
 	chunks, err := bytes.SplitFile(filePath, numberOfParts)
 	if err != nil {
 		return StationTemperatureStatisticsSummary{}, err
@@ -156,6 +152,7 @@ func updateStatisticsIn(entries []Entry, currentBuffer []byte) ([]byte, int) {
 	return leftOver, entryCount
 }
 
+// getStatistics inlinable (cost 74)
 func getStatistics(entries []Entry, hash uint64, index int, stationName []byte) *StationTemperatureStatistics {
 	for {
 		if entries[index].station == nil {
