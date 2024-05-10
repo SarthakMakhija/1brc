@@ -48,7 +48,7 @@ func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
 		}(chunk)
 	}
 
-	statisticsByStationName := make(map[string]*StationTemperatureStatistics, 1<<16) //TODO: allocate size?
+	statisticsByStationName := make(map[string]*StationTemperatureStatistics) //TODO: allocate size?
 	for i := 0; i < len(chunks); i++ {
 		statisticsChunkSummary := <-chunkSummaries
 		entryCount := statisticsChunkSummary.totalEntries
