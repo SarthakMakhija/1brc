@@ -49,7 +49,7 @@ func TestGetInStatisticsByStationNameMap(t *testing.T) {
 	entry := Entry{}
 	entry.statistics = &StationTemperatureStatistics{minTemperature: -990, maxTemperature: 10}
 	entry.hash = 11
-	copy(entry.station[:], "Odesa")
+	entry.station = []byte("Odesa")
 
 	statisticsByStationNameMap := NewStatisticsByStationNameMap(8)
 	statisticsByStationNameMap.entries[3] = entry
@@ -77,4 +77,11 @@ func TestGetWithHashConflictInStatisticsByStationNameMap(t *testing.T) {
 	statistics := statisticsByStationNameMap.GetOrEmptyStatisticsFor(11, []byte("Delhi"))
 	assert.Equal(t, int16(-890), statistics.minTemperature)
 	assert.Equal(t, int16(20), statistics.maxTemperature)
+}
+
+func TestGetInStatisticsByStationNameMapWithEmptyStatistics(t *testing.T) {
+	statisticsByStationNameMap := NewStatisticsByStationNameMap(8)
+
+	statistics := statisticsByStationNameMap.GetOrEmptyStatisticsFor(11, []byte("Odesa"))
+	assert.Equal(t, int64(0), statistics.totalEntries)
 }

@@ -177,21 +177,22 @@ func NewStatisticsByStationNameMap(capacity int) *StatisticsByStationNameMap {
 
 func (statisticsByStationName *StatisticsByStationNameMap) GetOrEmptyStatisticsFor(hash uint64, stationName []byte) *StationTemperatureStatistics {
 	index := hash & statisticsByStationName.mask
-	entry := statisticsByStationName.entries[index]
-
-	for entry.station != nil && !(entry.hash == hash && bytes2.Equal(entry.station, stationName)) {
-		index = (index + 1) & statisticsByStationName.mask
-		entry = statisticsByStationName.entries[index]
-	}
-	if entry.hash == 0 {
-		key := make([]byte, len(stationName))
-		copy(key, stationName)
-
-		statisticsByStationName.entries[index] = Entry{
-			hash:       hash,
-			station:    key,
-			statistics: &StationTemperatureStatistics{},
+	for {
+		entry := &statisticsByStationName.entries[index]
+		if entry.station == nil {
+			key := make([]byte, len(stationName))
+			copy(key, stationName)
+			*entry = Entry{
+				hash:       hash,
+				station:    key,
+				statistics: &StationTemperatureStatistics{},
+			}
+			return entry.statistics
 		}
+
+		if entry.hash == hash && bytes2.Equal(entry.station, stationName) {
+			return entry.statistics
+		}
+		index = (index + 1) & statisticsByStationName.mask
 	}
-	return statisticsByStationName.entries[index].statistics
 }
