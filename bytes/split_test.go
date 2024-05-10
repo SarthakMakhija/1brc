@@ -98,3 +98,36 @@ func TestConvertsTheSliceToNegativeTemperatureLessThan10(t *testing.T) {
 
 	assert.Equal(t, Temperature(-14), temperature)
 }
+
+// //
+func TestConvertsTheSliceWithNewLineToTemperature(t *testing.T) {
+	line := []byte("10.1\n")
+	temperature, numberOfCharactersRead := ToTemperatureWithNewLine(line)
+
+	assert.Equal(t, 4, numberOfCharactersRead)
+	assert.Equal(t, Temperature(101), temperature)
+}
+
+func TestConvertsTheSliceWithNewLineToNegativeTemperature(t *testing.T) {
+	line := []byte("-99.9\n")
+	temperature, numberOfCharactersRead := ToTemperatureWithNewLine(line)
+
+	assert.Equal(t, 5, numberOfCharactersRead)
+	assert.Equal(t, Temperature(-999), temperature)
+}
+
+func TestConvertsTheSliceWithNewLineToTemperatureLessThan10(t *testing.T) {
+	line := []byte("1.4\n")
+	temperature, numberOfCharactersRead := ToTemperatureWithNewLine(line)
+
+	assert.Equal(t, 3, numberOfCharactersRead)
+	assert.Equal(t, Temperature(14), temperature)
+}
+
+func TestConvertsTheSliceWithNewLineToNegativeTemperatureLessThan10(t *testing.T) {
+	line := []byte("-1.4\n")
+	temperature, numberOfCharactersRead := ToTemperatureWithNewLine(line)
+
+	assert.Equal(t, 4, numberOfCharactersRead)
+	assert.Equal(t, Temperature(-14), temperature)
+}
