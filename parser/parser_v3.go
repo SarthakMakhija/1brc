@@ -10,9 +10,8 @@ import (
 )
 
 /**
-1. Avoid bytes2.IndexByte
-	- This will change ToTemperature
-2. See if NewStatisticsByStationNameMap can be converted to a method
+1. See if NewStatisticsByStationNameMap can be converted to a method
+2. Maybe change iteration over entire entries: for index := range statisticsChunkSummary.statisticsByStationName.entries
 */
 
 const (
@@ -89,15 +88,19 @@ func readChunk(file *os.File, chunk bytes.Chunk) (StationTemperatureStatisticsCh
 }
 
 func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *StatisticsByStationNameMap) []byte {
-	buffer := currentBuffer[:]
+	lastNewLineIndex := bytes2.LastIndexByte(currentBuffer, '\n')
+	if lastNewLineIndex == -1 {
+		return nil
+	}
+
+	const advanceCursorPostTemperatureBy = 2 //one for newline and one to move to the next line
+
+	leftOver, buffer := currentBuffer[lastNewLineIndex+1:], currentBuffer[:lastNewLineIndex+1]
 	for len(buffer) > 0 {
-		newLineIndex := bytes2.IndexByte(buffer, '\n') //TODO: avoid this
-		if newLineIndex == -1 {
-			return buffer
-		}
 		separatorIndex := -1
 		hash := uint64(fnv1aOffset64)
-		for index, ch := range buffer[:newLineIndex] {
+
+		for index, ch := range buffer[:] {
 			if ch == bytes.Separator {
 				separatorIndex = index
 				break
@@ -105,8 +108,7 @@ func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *Statistic
 			hash ^= uint64(ch)
 			hash *= fnv1aPrime64
 		}
-
-		temperature := bytes.ToTemperature(buffer[separatorIndex+1 : newLineIndex])
+		temperature, numberOfBytesRead := bytes.ToTemperatureWithNewLine(buffer[separatorIndex+1:])
 		statistics := statisticsByStationName.Get(hash, buffer[:separatorIndex])
 
 		if statistics.totalEntries == 0 {
@@ -124,13 +126,9 @@ func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *Statistic
 			statistics.totalEntries += 1
 			statisticsByStationName.entryCount += 1
 		}
-		if newLineIndex+1 < len(buffer) { //TODO: avoid this
-			buffer = buffer[newLineIndex+1:]
-		} else {
-			return nil
-		}
+		buffer = buffer[separatorIndex+numberOfBytesRead+advanceCursorPostTemperatureBy:]
 	}
-	return buffer
+	return leftOver
 }
 
 func update(stationName []byte, summary *StationTemperatureStatistics, statisticsByStationName map[string]*StationTemperatureStatistics) {
