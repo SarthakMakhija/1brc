@@ -92,12 +92,14 @@ func ToTemperatureWithNewLine(slice []byte) (Temperature, int) {
 	if negative {
 		slice = slice[1:]
 	}
-	temperature := Temperature(0)
 
-	_ = slice[3]
+	temperature := Temperature(0)
 	numberOfBytesRead := 0
+	_ = slice[3]
+
 	if slice[1] == '.' {
-		temperature = Temperature(slice[0])*10 + Temperature(slice[2]) - '0'*(10+1)
+		temperatureValue := (slice[0]-'0')*10 + (slice[2] - '0')
+		temperature = Temperature(temperatureValue)
 		numberOfBytesRead = 3
 	} else {
 		_ = slice[4]
