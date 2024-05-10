@@ -155,7 +155,8 @@ func updateStatisticsIn(entries []Entry, currentBuffer []byte) ([]byte, int) {
 // getStatistics inlinable (cost 74)
 func getStatistics(entries []Entry, hash uint64, index int, stationName []byte) *StationTemperatureStatistics {
 	for {
-		if entries[index].station == nil {
+		entry := entries[index]
+		if entry.station == nil {
 			key := make([]byte, len(stationName))
 			copy(key, stationName)
 			entry := Entry{
@@ -167,8 +168,8 @@ func getStatistics(entries []Entry, hash uint64, index int, stationName []byte) 
 			return entry.statistics
 		}
 
-		if entries[index].hash == hash && bytes2.Equal(entries[index].station, stationName) {
-			return entries[index].statistics
+		if entry.hash == hash && bytes2.Equal(entry.station, stationName) {
+			return entry.statistics
 		}
 		index++
 		if index >= capacity {
