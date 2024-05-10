@@ -6,7 +6,7 @@ import (
 
 const (
 	Separator  = byte(';')
-	minusSign  = byte('-')
+	MinusSign  = byte('-')
 	multiplier = int16(10)
 )
 
@@ -35,7 +35,7 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 	previousIndex := lineLength - 4
 	ch := line[previousIndex]
 	switch ch {
-	case minusSign:
+	case MinusSign:
 		eligibleTemperature := integerValue*multiplier + (fractionalValue)
 		eligibleTemperature = ^eligibleTemperature + 1
 		if lineLength-5 >= 0 { //prevent IsSliceInBounds checks
@@ -51,7 +51,7 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 
 	lastIndex := lineLength - 5
 	switch line[lastIndex] {
-	case minusSign:
+	case MinusSign:
 		eligibleTemperature := integerValue*multiplier + (fractionalValue)
 		eligibleTemperature = ^eligibleTemperature + 1
 		if lineLength-6 >= 0 { //prevent IsSliceInBounds checks
@@ -68,7 +68,7 @@ func SplitIntoStationNameAndTemperature(line []byte) ([]byte, Temperature, error
 
 // ToTemperature assumes valid input which starts after the Separator (;).
 func ToTemperature(slice []byte) Temperature {
-	negative := slice[0] == minusSign
+	negative := slice[0] == MinusSign
 	if negative {
 		slice = slice[1:]
 	}
@@ -87,27 +87,21 @@ func ToTemperature(slice []byte) Temperature {
 	return eligibleTemperature
 }
 
-func ToTemperatureWithNewLine(slice []byte) (Temperature, int) {
-	negative := slice[0] == minusSign
-	if negative {
-		slice = slice[1:]
-	}
-
+// ToTemperatureWithNewLine inlinable (cost = 79)
+func ToTemperatureWithNewLine(slice []byte, isNegative bool) (Temperature, int) {
 	temperature := Temperature(0)
-	numberOfBytesRead := 0
+	numberOfBytesRead := 3
 	_ = slice[3]
 
 	if slice[1] == '.' {
-		temperatureValue := (slice[0]-'0')*10 + (slice[2] - '0')
-		temperature = Temperature(temperatureValue)
-		numberOfBytesRead = 3
+		temperature = Temperature((slice[0]-'0')*10 + (slice[2] - '0'))
 	} else {
 		_ = slice[4]
 		temperature = Temperature(slice[0])*100 + Temperature(slice[1])*10 + Temperature(slice[3]) - '0'*(100+10+1)
 		numberOfBytesRead = 4
 	}
 
-	if negative {
+	if isNegative {
 		numberOfBytesRead += 1
 		temperature = -temperature
 	}

@@ -114,7 +114,15 @@ func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *Statistic
 			hash ^= uint64(ch)
 			hash *= fnv1aPrime64
 		}
-		temperature, numberOfBytesRead := bytes.ToTemperatureWithNewLine(buffer[separatorIndex+1:])
+
+		isMinus := false
+		temperatureSlice := buffer[separatorIndex+1:]
+		if temperatureSlice[0] == bytes.MinusSign {
+			temperatureSlice = temperatureSlice[1:]
+			isMinus = true
+		}
+
+		temperature, numberOfBytesRead := bytes.ToTemperatureWithNewLine(temperatureSlice, isMinus)
 		statistics := statisticsByStationName.GetOrEmptyStatisticsFor(hash, buffer[:separatorIndex])
 
 		if statistics.totalEntries == 0 {
