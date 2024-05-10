@@ -51,8 +51,8 @@ func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
 		statisticsChunkSummary := <-chunkSummaries
 		for index := range statisticsChunkSummary.statisticsByStationName.entries {
 			entry := statisticsChunkSummary.statisticsByStationName.entries[index]
-			if entry.statistics.totalEntries > 0 {
-				update(entry.station[:entry.stationLength], &entry.statistics, statisticsByStationName)
+			if entry.station != nil {
+				update(entry.station, entry.statistics, statisticsByStationName)
 			}
 		}
 	}
@@ -109,7 +109,7 @@ func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *Statistic
 			hash *= fnv1aPrime64
 		}
 		temperature, numberOfBytesRead := bytes.ToTemperatureWithNewLine(buffer[separatorIndex+1:])
-		statistics := statisticsByStationName.Get(hash, buffer[:separatorIndex])
+		statistics := statisticsByStationName.GetOrEmptyStatisticsFor(hash, buffer[:separatorIndex])
 
 		if statistics.totalEntries == 0 {
 			statistics.minTemperature = temperature
@@ -148,10 +148,9 @@ func update(stationName []byte, summary *StationTemperatureStatistics, statistic
 }
 
 type Entry struct {
-	station       [128]byte
-	statistics    StationTemperatureStatistics
-	hash          uint64
-	stationLength int
+	station    []byte
+	statistics *StationTemperatureStatistics
+	hash       uint64
 }
 
 type StatisticsByStationNameMap struct {
@@ -170,18 +169,23 @@ func NewStatisticsByStationNameMap(capacity int) *StatisticsByStationNameMap {
 	}
 }
 
-// TODO: maybe a method
-func (statisticsByStationName *StatisticsByStationNameMap) Get(hash uint64, stationName []byte) *StationTemperatureStatistics {
+func (statisticsByStationName *StatisticsByStationNameMap) GetOrEmptyStatisticsFor(hash uint64, stationName []byte) *StationTemperatureStatistics {
 	index := hash & statisticsByStationName.mask
-	entry := &statisticsByStationName.entries[index]
+	entry := statisticsByStationName.entries[index]
 
-	for entry.stationLength > 0 && !(entry.hash == hash && bytes2.Equal(entry.station[:entry.stationLength], stationName)) {
+	for entry.station != nil && !(entry.hash == hash && bytes2.Equal(entry.station, stationName)) {
 		index = (index + 1) & statisticsByStationName.mask
-		entry = &statisticsByStationName.entries[index]
+		entry = statisticsByStationName.entries[index]
 	}
-	if entry.stationLength == 0 {
-		entry.hash = hash
-		entry.stationLength = copy(entry.station[:], stationName)
+	if entry.hash == 0 {
+		key := make([]byte, len(stationName))
+		copy(key, stationName)
+
+		statisticsByStationName.entries[index] = Entry{
+			hash:       hash,
+			station:    key,
+			statistics: &StationTemperatureStatistics{},
+		}
 	}
-	return &entry.statistics
+	return statisticsByStationName.entries[index].statistics
 }

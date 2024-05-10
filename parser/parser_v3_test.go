@@ -47,34 +47,34 @@ func TestParseWithTemperaturesForAverageTemperatureV3(t *testing.T) {
 
 func TestGetInStatisticsByStationNameMap(t *testing.T) {
 	entry := Entry{}
-	entry.statistics = StationTemperatureStatistics{minTemperature: -990, maxTemperature: 10}
+	entry.statistics = &StationTemperatureStatistics{minTemperature: -990, maxTemperature: 10}
 	entry.hash = 11
-	entry.stationLength = copy(entry.station[:], "Odesa")
+	copy(entry.station[:], "Odesa")
 
 	statisticsByStationNameMap := NewStatisticsByStationNameMap(8)
 	statisticsByStationNameMap.entries[3] = entry
 
-	statistics := statisticsByStationNameMap.Get(11, []byte("Odesa"))
+	statistics := statisticsByStationNameMap.GetOrEmptyStatisticsFor(11, []byte("Odesa"))
 	assert.Equal(t, int16(-990), statistics.minTemperature)
 	assert.Equal(t, int16(10), statistics.maxTemperature)
 }
 
 func TestGetWithHashConflictInStatisticsByStationNameMap(t *testing.T) {
 	entry := Entry{}
-	entry.statistics = StationTemperatureStatistics{minTemperature: -990, maxTemperature: 10}
+	entry.statistics = &StationTemperatureStatistics{minTemperature: -990, maxTemperature: 10}
 	entry.hash = 11
-	entry.stationLength = copy(entry.station[:], "Odesa")
+	entry.station = []byte("Odesa")
 
 	anotherEntry := Entry{}
-	anotherEntry.statistics = StationTemperatureStatistics{minTemperature: -890, maxTemperature: 20}
+	anotherEntry.statistics = &StationTemperatureStatistics{minTemperature: -890, maxTemperature: 20}
 	anotherEntry.hash = 11
-	anotherEntry.stationLength = copy(anotherEntry.station[:], "Delhi")
+	anotherEntry.station = []byte("Delhi")
 
 	statisticsByStationNameMap := NewStatisticsByStationNameMap(8)
 	statisticsByStationNameMap.entries[3] = entry
 	statisticsByStationNameMap.entries[4] = anotherEntry
 
-	statistics := statisticsByStationNameMap.Get(11, []byte("Delhi"))
+	statistics := statisticsByStationNameMap.GetOrEmptyStatisticsFor(11, []byte("Delhi"))
 	assert.Equal(t, int16(-890), statistics.minTemperature)
 	assert.Equal(t, int16(20), statistics.maxTemperature)
 }
