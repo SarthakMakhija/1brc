@@ -49,10 +49,16 @@ func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
 	statisticsByStationName := make(map[string]*StationTemperatureStatistics, 1<<16) //TODO: allocate size?
 	for i := 0; i < len(chunks); i++ {
 		statisticsChunkSummary := <-chunkSummaries
+		entryCount := statisticsChunkSummary.statisticsByStationName.entryCount
+
 		for index := range statisticsChunkSummary.statisticsByStationName.entries {
 			entry := statisticsChunkSummary.statisticsByStationName.entries[index]
 			if entry.station != nil {
 				update(entry.station, entry.statistics, statisticsByStationName)
+				entryCount--
+			}
+			if entryCount == 0 {
+				break
 			}
 		}
 	}
@@ -116,6 +122,7 @@ func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *Statistic
 			statistics.maxTemperature = temperature
 			statistics.aggregateTemperature = int64(temperature)
 			statistics.totalEntries = 1
+			statisticsByStationName.entryCount += 1
 		} else {
 			if temperature < statistics.minTemperature {
 				statistics.minTemperature = temperature
@@ -124,7 +131,6 @@ func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *Statistic
 			}
 			statistics.aggregateTemperature = statistics.aggregateTemperature + int64(temperature)
 			statistics.totalEntries += 1
-			statisticsByStationName.entryCount += 1
 		}
 		buffer = buffer[separatorIndex+numberOfBytesRead+advanceCursorPostTemperatureBy:]
 	}
