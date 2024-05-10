@@ -10,7 +10,6 @@ import (
 )
 
 /**
-1. See if NewStatisticsByStationNameMap can be converted to a method
 2. Change capacity (currently 1<<14)
 */
 
@@ -18,7 +17,14 @@ const (
 	capacity      = 1 << 14
 	fnv1aOffset64 = 14695981039346656037
 	fnv1aPrime64  = 1099511628211
+	entryMask     = capacity - 1
 )
+
+type Entry struct {
+	station    []byte
+	statistics *StationTemperatureStatistics
+	hash       uint64
+}
 
 func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
 	file, err := os.Open(filePath)
@@ -49,10 +55,10 @@ func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
 	statisticsByStationName := make(map[string]*StationTemperatureStatistics, 1<<16) //TODO: allocate size?
 	for i := 0; i < len(chunks); i++ {
 		statisticsChunkSummary := <-chunkSummaries
-		entryCount := statisticsChunkSummary.statisticsByStationName.entryCount
+		entryCount := statisticsChunkSummary.totalEntries
 
-		for index := range statisticsChunkSummary.statisticsByStationName.entries {
-			entry := statisticsChunkSummary.statisticsByStationName.entries[index]
+		for index := range statisticsChunkSummary.stationEntries {
+			entry := statisticsChunkSummary.stationEntries[index]
 			if entry.station != nil {
 				update(entry.station, entry.statistics, statisticsByStationName)
 				entryCount--
@@ -67,14 +73,17 @@ func ParseV3(filePath string) (StationTemperatureStatisticsSummary, error) {
 
 func readChunk(file *os.File, chunk bytes.Chunk) (StationTemperatureStatisticsChunkSummary, error) {
 	reader := io.NewSectionReader(file, chunk.StartOffset, chunk.Size)
-	statisticsByStationName := NewStatisticsByStationNameMap(capacity)
 	buffer := make([]byte, brc.ReadSize)
 
+	stationEntries := make([]Entry, capacity)
+	totalEntries := 0
 	offset := 0
 	for {
 		n, err := reader.Read(buffer[offset:])
 		if n+offset > 0 {
-			leftOver := updateStatisticsIn(buffer[:n+offset], statisticsByStationName)
+			leftOver, entryCount := updateStatisticsIn(stationEntries, buffer[:n+offset])
+			totalEntries += entryCount
+
 			if len(leftOver) > 0 {
 				offset = copy(buffer[:], leftOver)
 			} else {
@@ -90,18 +99,19 @@ func readChunk(file *os.File, chunk bytes.Chunk) (StationTemperatureStatisticsCh
 			}
 		}
 	}
-	return NewStationTemperatureStatisticsChunkSummary(statisticsByStationName), nil
+	return NewStationTemperatureStatisticsChunkSummary(stationEntries, totalEntries), nil
 }
 
-func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *StatisticsByStationNameMap) []byte {
+func updateStatisticsIn(entries []Entry, currentBuffer []byte) ([]byte, int) {
 	lastNewLineIndex := bytes2.LastIndexByte(currentBuffer, '\n')
 	if lastNewLineIndex == -1 {
-		return nil
+		return nil, 0
 	}
 
 	const advanceCursorPostTemperatureBy = 2 //one for newline and one to move to the next line
 
 	leftOver, buffer := currentBuffer[lastNewLineIndex+1:], currentBuffer[:lastNewLineIndex+1]
+	entryCount := 0
 	for len(buffer) > 0 {
 		separatorIndex := -1
 		hash := uint64(fnv1aOffset64)
@@ -123,14 +133,15 @@ func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *Statistic
 		}
 
 		temperature, numberOfBytesRead := bytes.ToTemperatureWithNewLine(temperatureSlice, isMinus)
-		statistics := statisticsByStationName.GetOrEmptyStatisticsFor(hash, buffer[:separatorIndex])
+		index := int(hash & entryMask)
+		statistics := getStatistics(entries, hash, index, buffer[:separatorIndex])
 
 		if statistics.totalEntries == 0 {
 			statistics.minTemperature = temperature
 			statistics.maxTemperature = temperature
 			statistics.aggregateTemperature = int64(temperature)
 			statistics.totalEntries = 1
-			statisticsByStationName.entryCount += 1
+			entryCount++
 		} else {
 			if temperature < statistics.minTemperature {
 				statistics.minTemperature = temperature
@@ -142,7 +153,31 @@ func updateStatisticsIn(currentBuffer []byte, statisticsByStationName *Statistic
 		}
 		buffer = buffer[separatorIndex+numberOfBytesRead+advanceCursorPostTemperatureBy:]
 	}
-	return leftOver
+	return leftOver, entryCount
+}
+
+func getStatistics(entries []Entry, hash uint64, index int, stationName []byte) *StationTemperatureStatistics {
+	for {
+		if entries[index].station == nil {
+			key := make([]byte, len(stationName))
+			copy(key, stationName)
+			entry := Entry{
+				hash:       hash,
+				station:    key,
+				statistics: &StationTemperatureStatistics{},
+			}
+			entries[index] = entry
+			return entry.statistics
+		}
+
+		if entries[index].hash == hash && bytes2.Equal(entries[index].station, stationName) {
+			return entries[index].statistics
+		}
+		index++
+		if index >= capacity {
+			index = 0
+		}
+	}
 }
 
 func update(stationName []byte, summary *StationTemperatureStatistics, statisticsByStationName map[string]*StationTemperatureStatistics) {
@@ -158,50 +193,5 @@ func update(stationName []byte, summary *StationTemperatureStatistics, statistic
 		}
 		existingStatistics.aggregateTemperature = summary.aggregateTemperature + existingStatistics.aggregateTemperature
 		existingStatistics.totalEntries = summary.totalEntries + existingStatistics.totalEntries
-	}
-}
-
-type Entry struct {
-	station    []byte
-	statistics *StationTemperatureStatistics
-	hash       uint64
-}
-
-type StatisticsByStationNameMap struct {
-	entries    []Entry
-	mask       uint64
-	capacity   int
-	entryCount int
-}
-
-func NewStatisticsByStationNameMap(capacity int) *StatisticsByStationNameMap {
-	return &StatisticsByStationNameMap{
-		entries:    make([]Entry, capacity),
-		mask:       uint64(capacity - 1),
-		capacity:   capacity,
-		entryCount: 0,
-	}
-}
-
-func (statisticsByStationName *StatisticsByStationNameMap) GetOrEmptyStatisticsFor(hash uint64, stationName []byte) *StationTemperatureStatistics {
-	index := hash & statisticsByStationName.mask
-	for {
-		entry := statisticsByStationName.entries[index]
-		if entry.station == nil {
-			key := make([]byte, len(stationName))
-			copy(key, stationName)
-			entry = Entry{
-				hash:       hash,
-				station:    key,
-				statistics: &StationTemperatureStatistics{},
-			}
-			statisticsByStationName.entries[index] = entry
-			return entry.statistics
-		}
-
-		if entry.hash == hash && bytes2.Equal(entry.station, stationName) {
-			return entry.statistics
-		}
-		index = (index + 1) & statisticsByStationName.mask
 	}
 }
