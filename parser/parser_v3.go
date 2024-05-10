@@ -11,7 +11,7 @@ import (
 
 /**
 1. See if NewStatisticsByStationNameMap can be converted to a method
-2. Maybe change iteration over entire entries: for index := range statisticsChunkSummary.statisticsByStationName.entries
+2. Change capacity (currently 1<<14)
 */
 
 const (
